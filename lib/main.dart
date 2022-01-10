@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'screens/home.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -14,8 +13,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-        title: 'Driver',
-        home: Extra(),
+      title: 'Driver',
+      home: Extra(),
     );
   }
 }
