@@ -1,11 +1,15 @@
 
 import 'package:flutter/material.dart';
+import 'package:puddlyapp/crate_page.dart';
 import 'package:puddlyapp/otp_checker.dart';
 
 void main() => runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Verificatoin(),
+      home: cratepage(),
+      theme: ThemeData(
+        brightness: Brightness.dark,
+      ),
     )
 );
 
