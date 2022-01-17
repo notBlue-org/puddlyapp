@@ -21,6 +21,7 @@ class _DriversAppState extends State<DriversApp> {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      title: "Drivers App",
       home: MainScreen(),
       onGenerateRoute: RouteGenerator.generateRoute,
     );
