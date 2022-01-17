@@ -1,5 +1,7 @@
+import 'package:driversapp/screens/crate_page.dart';
 import 'package:driversapp/screens/home_page.dart';
 import 'package:driversapp/screens/login_page.dart';
+import 'package:driversapp/screens/otp_checker.dart';
 import 'package:driversapp/static_assets/profile_page.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +14,10 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const ProfilePage());
       case '/login_page':
         return MaterialPageRoute(builder: (_) => const LoginPage());
+      case '/crate_page':
+        return MaterialPageRoute(builder: (_) => const CratePage());
+      case '/verification_page':
+        return MaterialPageRoute(builder: (_) => const VerificationPage());
       default:
         return _errorRoute();
     }

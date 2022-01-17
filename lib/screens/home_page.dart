@@ -35,11 +35,14 @@ class HomePage extends StatelessWidget {
               alignment: WrapAlignment.spaceBetween,
               direction: Axis.horizontal,
               children: <Widget>[
-                _getButton(Icons.directions_car, "Store Locator"),
-                _getButton(Icons.shopping_cart, "My Orders"),
+                _getButton(context, Icons.directions_car, "Store Locator",
+                    "/crate_page"),
                 _getButton(
-                    Icons.checklist_rtl_outlined, "Delivery Confirmation"),
-                _getButton(Icons.all_inbox_sharp, "Crate Management"),
+                    context, Icons.shopping_cart, "My Orders", "/crate_page"),
+                _getButton(context, Icons.checklist_rtl_outlined,
+                    "Delivery Confirmation", "/verification_page"),
+                _getButton(context, Icons.all_inbox_sharp, "Crate Management",
+                    "/crate_page"),
               ],
             ),
           ),
@@ -66,7 +69,7 @@ class HomePage extends StatelessWidget {
             },
           ),
         ),
-        // TODO: Get smalleer bottom bar svg from anji
+        // TODO: Get smaller bottom bar svg from anji
         // Positioned(
         //   bottom: -320,
         //   child: BottomWave(),
@@ -76,7 +79,8 @@ class HomePage extends StatelessWidget {
   }
 }
 
-Column _getButton(IconData givenIcon, String label) {
+Column _getButton(
+    BuildContext context, IconData givenIcon, String label, String navPage) {
   return Column(children: [
     Container(
       margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -96,7 +100,9 @@ Column _getButton(IconData givenIcon, String label) {
             color: kButtonColor,
           ),
           onPressed: () {
-            print("hello");
+            Navigator.of(context).pushReplacementNamed(
+              navPage,
+            );
           },
         ),
       ),
