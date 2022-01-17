@@ -87,7 +87,7 @@ class _VerificationPageState extends State<VerificationPage> {
                   Container(
                     height: 250,
                     child: Image(
-                      image: AssetImage('assets/email.png'),
+                      image: AssetImage('assets/images/email.png'),
                     )
                   ),
                   SizedBox(height: 30,),

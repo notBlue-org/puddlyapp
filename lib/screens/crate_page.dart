@@ -66,7 +66,7 @@ class _CratePageState extends State<CratePage> {
                 ),
               SizedBox(height: 10.0),
               TextFormField(
-                keyboardType: TextInputType.text,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                     hintText: 'The remianing Crates left are $CrateRem',
                     border: OutlineInputBorder(
