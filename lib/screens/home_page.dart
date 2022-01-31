@@ -38,7 +38,7 @@ class HomePage extends StatelessWidget {
                 _getButton(context, Icons.directions_car, "Store Locator",
                     "/crate_page"),
                 _getButton(
-                    context, Icons.shopping_cart, "My Orders", "/crate_page"),
+                    context, Icons.shopping_cart, "My Orders", "/order_page"),
                 _getButton(context, Icons.checklist_rtl_outlined,
                     "Delivery Confirmation", "/verification_page"),
                 _getButton(context, Icons.all_inbox_sharp, "Crate Management",

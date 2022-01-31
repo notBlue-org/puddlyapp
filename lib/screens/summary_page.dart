@@ -39,18 +39,16 @@ class _summaryPageState extends State<summaryPage> {
                       (doc) =>
                       ListTile(
                         contentPadding: EdgeInsets.zero,
+
                         leading: GestureDetector(
                           child: const Icon(Icons.shopping_bag),
 
                         ),
                         title: Text(doc["DistributorID"]),
-
-                        trailing:  IconButton(
-                          icon:const Icon(Icons.arrow_forward_ios),
-                          onPressed:(){},
-                        ),
+                        
                       ),
-                ).toList() as List<Widget>
+                ).toList() as List<Widget>,
+
             );},
         ),)
     );
