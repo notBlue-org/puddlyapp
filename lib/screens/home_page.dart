@@ -1,7 +1,8 @@
 import 'package:driversapp/constants/colors.dart';
-import 'package:driversapp/static_assets/bottom_wave.dart';
 import 'package:driversapp/static_assets/wave_svg.dart';
 import 'package:driversapp/utils/login.dart';
+import 'package:driversapp/widget/cust_appbar.dart';
+import 'package:driversapp/widget/nav_bar.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -9,26 +10,15 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      resizeToAvoidBottomInset: false,
+      drawer: NavDrawer(),
+      appBar: custAppBar("Home"),
       body: Stack(alignment: Alignment.center, children: [
         Positioned(
           top: 0,
           child: WaveSvg(),
         ),
-        Positioned(
-            top: 80,
-            left: 0.0,
-            right: 0.0,
-            child: AppBar(
-              title: const Text(
-                "Home",
-                style: TextStyle(
-                  color: kButtonColor,
-                  fontSize: 30.0,
-                ),
-              ),
-              backgroundColor: Colors.transparent, //No more green
-              elevation: 0.0,
-            )),
         Positioned(
           child: Center(
             child: Wrap(

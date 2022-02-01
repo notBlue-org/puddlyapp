@@ -1,28 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driversapp/screens/summary_page.dart';
+import 'package:driversapp/widget/nav_bar.dart';
 
 
 
 import 'package:flutter/material.dart';
-
 class OrderPage extends StatefulWidget {
   const OrderPage({ Key? key }) : super(key: key);
   @override
   _OrderPageState createState() => _OrderPageState();
 }
 
-
 class _OrderPageState extends State<OrderPage> {
   get queryString => "Distributor";
   get queryString1 => "0";
   get brand=>"";
-
-
   @override
-
 
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: NavDrawer(),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text('My Orders'),

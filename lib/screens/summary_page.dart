@@ -45,7 +45,7 @@ class _summaryPageState extends State<summaryPage> {
 
                         ),
                         title: Text(doc["DistributorID"]),
-                        
+
                       ),
                 ).toList() as List<Widget>,
 

@@ -1,3 +1,4 @@
+import 'package:driversapp/widget/nav_bar.dart';
 import 'package:flutter/material.dart';
 
 class CratePage extends StatefulWidget {
@@ -23,6 +24,7 @@ class _CratePageState extends State<CratePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: NavDrawer(),
       appBar: AppBar(
         title: Text('Crate Mangment'),
       ),
