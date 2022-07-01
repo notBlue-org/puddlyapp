@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class payment extends StatefulWidget {
-
-
   @override
 
   _paymentState createState() => _paymentState();
@@ -15,7 +13,9 @@ class _paymentState extends State<payment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title:Text("Payment QR")),
       body: Container(
+          alignment: Alignment.center,
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance.collection("Drivers").snapshots(),
           builder:
@@ -28,7 +28,7 @@ class _paymentState extends State<payment> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
+                  children: const <Widget>[
                     Text("Loading..."),
                     SizedBox(
                       height: 50.0,
@@ -41,10 +41,13 @@ class _paymentState extends State<payment> {
               return ListView.builder(
                 itemCount: snapshot.data?.docs.length,
                 itemBuilder: (_, index) {
-                  return Card(
+                  return Container(
+                    alignment: Alignment.center,
                     child: ListTile(
                       title: Text(
-                          snapshot.data?.docs[index]["Name"]),        // getting the data from firestore
+                          snapshot.data?.docs[index]["Name"]),
+                      leading: Image.network(snapshot.data?.docs[index]["DriverQR"]),
+
                     ),
                   );
                 },
