@@ -36,26 +36,26 @@ class _OrderPageState extends State<OrderPage> {
           return ListView (
               children: snapshot.data?.docs.
               where((QueryDocumentSnapshot<Object?> element) =>
-              element["Route"].contains(queryString1)
+                  element["Route"].contains(queryString1)
               ).
               map(
-                      (doc) =>
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: GestureDetector(
-                                child: const Icon(Icons.shopping_bag),
+                    (doc) =>
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: GestureDetector(
+                        child: const Icon(Icons.shopping_bag),
 
-                            ),
-                            title: Text(doc["Name"]),
-                            subtitle:Text(doc["Brand"]),
+                      ),
+                      title: Text(doc["Name"]),
+                      subtitle:Text(doc["Brand"]),
 
-                            trailing:  IconButton(
-                              icon:const Icon(Icons.arrow_forward_ios),
-                              onPressed:(){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>summaryPage(docId:doc.id,brand:doc["Brand"])));
-                              },
-                            ),
-                       ),
+                      trailing:  IconButton(
+                        icon:const Icon(Icons.arrow_forward_ios),
+                        onPressed:(){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>summaryPage(docId:doc.id,brand:doc["Brand"])));
+                        },
+                      ),
+                    ),
               ).toList() as List<Widget>
           );
         },

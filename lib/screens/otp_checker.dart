@@ -1,5 +1,5 @@
-
 import 'package:animate_do/animate_do.dart';
+import 'package:driversapp/screens/payment.dart';
 import 'package:flutter_verification_code/flutter_verification_code.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -17,59 +17,42 @@ class _VerificationPageState extends State<VerificationPage> {
   bool _isResendAgain = false;
   bool _isVerified = false;
   bool _isLoading = false;
-
   String _code = '';
-
+  String type_1='Verify';
   late Timer _timer;
-  int _start = 60;
-  int _currentIndex = 0;
 
-  void resend() {
-    setState(() {
-      _isResendAgain = true;
-    });
 
-    const oneSec = Duration(seconds: 1);
-    _timer = Timer.periodic(oneSec, (timer) {
-      setState(() {
-        if (_start == 0) {
-          _start = 60;
-          _isResendAgain = false;
-          timer.cancel();
-        } else {
-          _start--;
-        }
-      });
-    });
-  }
 
   verify() {
+    if(_code=='2561'){
     setState(() {
       _isLoading = true;
     });
 
     const oneSec = Duration(milliseconds: 2000);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => payment()),
+    );
+
+
     _timer =  Timer.periodic(oneSec, (timer) {
       setState(() {
         _isLoading = false;
         _isVerified = true;
-      });
-    });
-  }
 
-  @override
-  void initState() {
-    Timer.periodic(const Duration(seconds: 5), (timer) {
+      });
+    });}
+    else{
       setState(() {
-        _currentIndex++;
-
-        if (_currentIndex == 3)
-          _currentIndex = 0;
+        type_1='Wrong OTP';
+        _isLoading = false;
+        _isVerified = false;
       });
-    });
-
-    super.initState();
+    }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -85,10 +68,10 @@ class _VerificationPageState extends State<VerificationPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    height: 250,
-                    child: Image(
-                      image: AssetImage('assets/images/email.png'),
-                    )
+                      height: 250,
+                      child: Image(
+                        image: AssetImage('assets/images/email.png'),
+                      )
                   ),
                   SizedBox(height: 30,),
                   FadeInDown(
@@ -124,24 +107,8 @@ class _VerificationPageState extends State<VerificationPage> {
                   ),
 
 
-                  SizedBox(height: 20,),
-                  FadeInDown(
-                    delay: Duration(milliseconds: 700),
-                    duration: Duration(milliseconds: 500),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Did not recieve  OTP?", style: TextStyle(fontSize: 14, color: Colors.grey.shade500),),
-                        TextButton(
-                            onPressed: () {
-                              if (_isResendAgain) return;
-                              resend();
-                            },
-                            child: Text(_isResendAgain ? "Try again in " + _start.toString() : "Resend", style: TextStyle(color: Colors.orangeAccent),)
-                        )
-                      ],
-                    ),
-                  ),
+
+
                   SizedBox(height: 50,),
                   FadeInDown(
                     delay: Duration(milliseconds: 800),
@@ -160,7 +127,7 @@ class _VerificationPageState extends State<VerificationPage> {
                           strokeWidth: 3,
                           color: Colors.black,
                         ),
-                      ) : _isVerified ? Icon(Icons.check_circle, color: Colors.white, size: 30,) : Text("Verify", style: TextStyle(color: Colors.white),),
+                      ) : _isVerified ? Icon(Icons.check_circle, color: Colors.white, size: 30,) : Text("$type_1", style: TextStyle(color: Colors.white),),
                     ),
                   )
                 ],)
