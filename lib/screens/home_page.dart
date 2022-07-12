@@ -12,7 +12,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
-      drawer: NavDrawer(),
+      drawer: const NavDrawer(),
       appBar: custAppBar("Home"),
       body: Stack(alignment: Alignment.center, children: [
         Positioned(

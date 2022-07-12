@@ -26,7 +26,13 @@ class NavDrawer extends StatelessWidget {
                   ),
                 ),
               ),
-              _getListTile(context, Icons.home, 'Order', '/order_page'),
+              _getListTile(context, Icons.home, 'Home', '/home_page'),
+              const Divider(
+                color: Colors.white,
+                indent: 10.0,
+                endIndent: 30.0,
+              ),
+              _getListTile(context, Icons.shopping_bag, 'Orders', '/order_page'),
               const Divider(
                 color: Colors.white,
                 indent: 10.0,
