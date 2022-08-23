@@ -32,27 +32,34 @@ class NavDrawer extends StatelessWidget {
                 indent: 10.0,
                 endIndent: 30.0,
               ),
-              _getListTile(context, Icons.shopping_bag, 'Orders', '/order_page'),
+              _getListTile(
+                  context, Icons.directions_car, 'Store Locator', '/store_page'),
               const Divider(
                 color: Colors.white,
                 indent: 10.0,
                 endIndent: 30.0,
               ),
               _getListTile(
-                  context, Icons.next_week_sharp, 'Crate Management', '/crate_page'),
+                  context, Icons.shopping_bag, 'My Orders', '/order_page'),
               const Divider(
                 color: Colors.white,
                 indent: 10.0,
                 endIndent: 30.0,
               ),
-              _getListTile(context, Icons.list_alt_rounded, 'All Orders',
-                  '/order_page'),
+              _getListTile(context, Icons.next_week_sharp, 'Crate Management',
+                  '/crate_page'),
               const Divider(
                 color: Colors.white,
                 indent: 10.0,
                 endIndent: 30.0,
               ),
-
+              // _getListTile(
+              //     context, Icons.list_alt_rounded, 'Profile', '/profile_page'),
+              // const Divider(
+              //   color: Colors.white,
+              //   indent: 10.0,
+              //   endIndent: 30.0,
+              // ),
               ListTile(
                 leading: const Icon(
                   Icons.logout,

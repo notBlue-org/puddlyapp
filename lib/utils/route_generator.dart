@@ -1,8 +1,8 @@
-import 'package:driversapp/screens/crate_page.dart';
-import 'package:driversapp/screens/home_page.dart';
+import 'package:driversapp/screens/app/crate_page.dart';
+import 'package:driversapp/screens/app/home_page.dart';
+import 'package:driversapp/screens/app/store_page.dart';
 import 'package:driversapp/screens/login_page.dart';
-import 'package:driversapp/screens/order_page.dart';
-import 'package:driversapp/screens/otp_checker.dart';
+import 'package:driversapp/screens/app/order_page.dart';
 
 import 'package:driversapp/static_assets/profile_page.dart';
 import 'package:flutter/material.dart';
@@ -10,19 +10,18 @@ import 'package:flutter/material.dart';
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case '/home_page':
-        return MaterialPageRoute(builder: (_) => const HomePage());
-      case '/profile_page':
-        return MaterialPageRoute(builder: (_) => const ProfilePage());
       case '/login_page':
         return MaterialPageRoute(builder: (_) => const LoginPage());
+      case '/home_page':
+        return MaterialPageRoute(builder: (_) => const HomePage());
       case '/crate_page':
         return MaterialPageRoute(builder: (_) => const CratePage());
-      case '/verification_page':
-        return MaterialPageRoute(builder: (_) => const VerificationPage());
       case '/order_page':
         return MaterialPageRoute(builder: (_) => const OrderPage());
-
+      case '/store_page':
+        return MaterialPageRoute(builder: (_) => const StorePage());
+      case '/profile_page':
+        return MaterialPageRoute(builder: (_) => const ProfilePage());
       default:
         return _errorRoute();
     }

@@ -26,11 +26,9 @@ class HomePage extends StatelessWidget {
               direction: Axis.horizontal,
               children: <Widget>[
                 _getButton(context, Icons.directions_car, "Store Locator",
-                    "/crate_page"),
+                    "/store_page"),
                 _getButton(
                     context, Icons.shopping_cart, "My Orders", "/order_page"),
-                _getButton(context, Icons.checklist_rtl_outlined,
-                    "Delivery Confirmation", "/verification_page"),
                 _getButton(context, Icons.all_inbox_sharp, "Crate Management",
                     "/crate_page"),
               ],
@@ -90,7 +88,7 @@ Column _getButton(
             color: kButtonColor,
           ),
           onPressed: () {
-            Navigator.of(context).pushReplacementNamed(
+            Navigator.of(context).pushNamed(
               navPage,
             );
           },

@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:driversapp/models/boxes.dart';
+import 'package:driversapp/models/user_stored.dart';
 import 'package:driversapp/utils/login.dart';
 import 'package:driversapp/utils/misc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -166,12 +169,27 @@ class _LoginButtonState extends State<LoginButton> {
           context: context, email: email, password: password);
       Navigator.of(context, rootNavigator: true).pop();
 
+      await FirebaseFirestore.instance
+          .collection('Drivers')
+          .where("Email", isEqualTo: _currentUser!.email)
+          .get()
+          .then((QuerySnapshot data) {
+        Map _currentUserFirestore = data.docs.elementAt(0).data() as Map;
+
+        final userData = UserStore();
+        userData.id = data.docs.elementAt(0).id;
+        userData.username = _currentUserFirestore["Name"];
+        userData.qr = _currentUserFirestore["QR"];
+        userData.email = _currentUserFirestore['Email'];
+        userData.route = _currentUserFirestore['Route'];
+
+        final box = Boxes.getUserStore();
+        box.put(0, userData);
+      });
       try {
-        if (_currentUser != null) {
-          Navigator.of(context).pushReplacementNamed(
-            '/home_page',
-          );
-        }
+        Navigator.of(context).pushReplacementNamed(
+          '/home_page',
+        );
       } catch (e) {
         Misc.createSnackbar(context, 'Error: $e.code');
       }

@@ -71,4 +71,21 @@ class Misc {
                   ]));
         });
   }
+
+  static String getCurrentDate() {
+    DateTime now = DateTime.now();
+    String day = now.day.toString().length == 2
+        ? now.day.toString()
+        : '0' + now.day.toString();
+    String month = now.month.toString().length == 2
+        ? now.month.toString()
+        : '0' + now.month.toString();
+    String orderDate = 'Orders_' +
+        day +
+        "-" +
+        month +
+        "-" +
+        now.year.toString().substring(2, 4);
+    return orderDate;
+  }
 }
