@@ -1,6 +1,7 @@
 import 'package:driversapp/static_assets/wave_svg.dart';
 import 'package:driversapp/widget/cust_appbar.dart';
 import 'package:driversapp/widget/nav_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class CratePage extends StatefulWidget {
@@ -9,6 +10,7 @@ class CratePage extends StatefulWidget {
   @override
   _CratePageState createState() => _CratePageState();
 }
+
 
 class _CratePageState extends State<CratePage> {
   String dropdownValue = 'Safe Productions';
@@ -29,12 +31,15 @@ class _CratePageState extends State<CratePage> {
       resizeToAvoidBottomInset: false,
       drawer: const NavDrawer(),
       appBar: custAppBar("Crate Management"),
-      body: Stack(alignment: Alignment.center, children: [
+      body:
+
+      Stack(alignment: Alignment.center, children: [
         Positioned(
           top: 0,
           child: WaveSvg(),
         ),
         Container(
+
         padding: const EdgeInsets.all(10.0),
         width: MediaQuery.of(context).size.width, // Full Width of Screen
         height: 500.0, // Desired Height
