@@ -151,7 +151,7 @@ class _CratePagebodyState extends State<CratePagebody> {
                           print(_numofcrates);
                           print(_currDist);
                           var final_crate =
-                              int.parse(_numofcrates) + int.parse(_value);
+                              int.parse(_value) + int.parse(_numofcrates);
 
                           print(final_crate);
                           FirebaseFirestore.instance
