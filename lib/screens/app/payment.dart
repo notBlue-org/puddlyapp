@@ -19,7 +19,7 @@ class _paymentState extends State<payment> {
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
       drawer: const NavDrawer(),
-      appBar: custAppBar("Store Locator"),
+      appBar: custAppBar("Payment Page"),
       body: Center(
           child: Column(children: [
         SizedBox(
@@ -66,9 +66,21 @@ class paymentBody extends StatelessWidget {
           if (snapshot.hasData &&
               snapshot.connectionState == ConnectionState.done) {
             List<String> finalMap = snapshot.data.cast<String>();
-            String QR = finalMap[1];
+            String imageUrl = finalMap[1];
             String name = finalMap[0];
-            return Image.network("https://picsum.photos/250?image=9");
+            return Container(
+                child: Row(
+              children: <Widget>[
+                Align(
+                    alignment: Alignment.center,
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.fill,
+                      height: 250,
+                      width: 250,
+                    ))
+              ],
+            ));
           }
           return const CircularProgressIndicator();
         });
