@@ -1,8 +1,9 @@
 import 'package:driversapp/screens/app/crate_page.dart';
 import 'package:driversapp/screens/app/home_page.dart';
+import 'package:driversapp/screens/app/payment.dart';
 import 'package:driversapp/screens/app/store_page.dart';
 import 'package:driversapp/screens/login_page.dart';
-import 'package:driversapp/screens/app/order_page.dart';
+import 'package:driversapp/screens/app/payment.dart';
 
 import 'package:driversapp/static_assets/profile_page.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class RouteGenerator {
       case '/crate_page':
         return MaterialPageRoute(builder: (_) => const Cratepage());
       case '/order_page':
-        return MaterialPageRoute(builder: (_) => const OrderPage());
+        return MaterialPageRoute(builder: (_) => payment());
       case '/store_page':
         return MaterialPageRoute(builder: (_) => const StorePage());
       case '/profile_page':

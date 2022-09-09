@@ -1,61 +1,76 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:driversapp/static_assets/wave_svg.dart';
+import 'package:driversapp/widget/cust_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+import '../../models/user_stored.dart';
+import '../../widget/nav_bar.dart';
 
 class payment extends StatefulWidget {
   @override
-
-  _paymentState createState() => _paymentState();
+  State<payment> createState() => _paymentState();
 }
-
-
 
 class _paymentState extends State<payment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:Text("Payment QR")),
-      body: Container(
-          alignment: Alignment.center,
-        child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection("Drivers").snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return new Text('Error: ${snapshot.error}');
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const <Widget>[
-                    Text("Loading..."),
-                    SizedBox(
-                      height: 50.0,
-                    ),
-                    CircularProgressIndicator()
-                  ],
-                ),
-              );
-            } else {
-              return ListView.builder(
-                itemCount: snapshot.data?.docs.length,
-                itemBuilder: (_, index) {
-                  return Container(
-                    alignment: Alignment.center,
-                    child: ListTile(
-                      title: Text(
-                          snapshot.data?.docs[index]["Name"]),
-                      leading: Image.network(snapshot.data?.docs[index]["DriverQR"]),
-
-                    ),
-                  );
-                },
-              );
-            }
-          },
-        ),
-      ),
+      extendBodyBehindAppBar: true,
+      resizeToAvoidBottomInset: false,
+      drawer: const NavDrawer(),
+      appBar: custAppBar("Store Locator"),
+      body: Center(
+          child: Column(children: [
+        SizedBox(
+            height: 150,
+            child: Stack(children: [Positioned(top: 0, child: WaveSvg())])),
+        paymentBody(),
+      ])),
     );
+  }
+}
+
+class paymentBody extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    Future getQR() async {
+      final user_box = await Hive.openBox<UserStore>('user');
+      final driver_route = user_box.getAt(0)?.route;
+      final driver_name = user_box.getAt(0)?.username;
+      List<String> map = [];
+      await FirebaseFirestore.instance
+          .collection("Drivers")
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          if (doc["Name"] == driver_name && doc["Route"] == driver_route) {
+            var name = doc["Name"];
+            var QR = doc["QR"];
+            map.add(name);
+            map.add(QR);
+            print(map);
+          }
+        });
+      });
+
+      return map;
+    }
+
+    return FutureBuilder<dynamic>(
+        future: getQR(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.hasError) {
+            return const Text("Something went wrong");
+          }
+          if (snapshot.hasData &&
+              snapshot.connectionState == ConnectionState.done) {
+            List<String> finalMap = snapshot.data.cast<String>();
+            String QR = finalMap[1];
+            String name = finalMap[0];
+            return Image.network("https://picsum.photos/250?image=9");
+          }
+          return const CircularProgressIndicator();
+        });
   }
 }
