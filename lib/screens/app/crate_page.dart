@@ -102,17 +102,27 @@ class _CratePagebodyState extends State<CratePagebody> {
               height: 500.0, // Desired Height
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     const SizedBox(
                       height: 50,
                     ),
+                    const Text(
+                      "Distributors Name",
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
                     DropdownSearch<String>(
                       items: finalList,
                       validator: (String? item) {
-                        if (item == null)
+                        if (item == null) {
                           return "Required field";
-                        else
+                        } else {
                           return null;
+                        }
                       },
                       onChanged: (String? data) {
                         {
@@ -123,7 +133,13 @@ class _CratePagebodyState extends State<CratePagebody> {
                         ;
                       },
                     ),
-                    const SizedBox(height: 10.0),
+                    const SizedBox(height: 20.0),
+                    const Text(
+                      "Crates Value",
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 25.0),
                     TextFormField(
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
@@ -151,7 +167,7 @@ class _CratePagebodyState extends State<CratePagebody> {
                           print(_numofcrates);
                           print(_currDist);
                           var final_crate =
-                              int.parse(_value) + int.parse(_numofcrates);
+                              int.parse(_value) - int.parse(_numofcrates);
 
                           print(final_crate);
                           FirebaseFirestore.instance

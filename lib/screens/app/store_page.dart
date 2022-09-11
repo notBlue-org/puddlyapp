@@ -89,18 +89,24 @@ class StorePageBody extends StatelessWidget {
                   itemBuilder: (BuildContext, int index) {
                     const SizedBox(height: 10.0);
 
-                    return ListTile(
-                      title: Text(finalList[index]),
-                      trailing: Icon(Icons.map),
-                      onTap: () {
-                        print(index);
-                        List values = finalMap.values.toList();
-                        var MapCord = values[index];
-                        var Lot = double.parse(MapCord.split(",")[0]);
-                        var Lat = double.parse(MapCord.split(",")[1]);
-                        openMap(Lot, Lat);
-                      },
-                    );
+                    return Card(
+                        elevation: 6,
+                        margin: const EdgeInsets.all(10),
+                        child: ListTile(
+                          title: Text(finalList[index]),
+                          trailing: Icon(
+                            Icons.location_on_outlined,
+                            color: Colors.lightBlue,
+                          ),
+                          onTap: () {
+                            print(index);
+                            List values = finalMap.values.toList();
+                            var MapCord = values[index];
+                            var Lot = double.parse(MapCord.split(",")[0]);
+                            var Lat = double.parse(MapCord.split(",")[1]);
+                            openMap(Lot, Lat);
+                          },
+                        ));
                   }));
         }
         return const CircularProgressIndicator();

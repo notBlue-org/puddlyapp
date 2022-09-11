@@ -68,19 +68,22 @@ class paymentBody extends StatelessWidget {
             List<String> finalMap = snapshot.data.cast<String>();
             String imageUrl = finalMap[1];
             String name = finalMap[0];
-            return Container(
-                child: Row(
+            print(finalMap);
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Align(
-                    alignment: Alignment.center,
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.fill,
-                      height: 250,
-                      width: 250,
-                    ))
+                const SizedBox(
+                  height: 50,
+                  width: 50,
+                ),
+                Image.network(
+                  imageUrl,
+                  fit: BoxFit.fill,
+                  height: 250,
+                  width: 250,
+                ),
               ],
-            ));
+            );
           }
           return const CircularProgressIndicator();
         });
