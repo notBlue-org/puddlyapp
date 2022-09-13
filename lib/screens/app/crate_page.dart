@@ -16,6 +16,7 @@ class Cratepage extends StatefulWidget {
 }
 
 class _CratepageState extends State<Cratepage> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -27,19 +28,20 @@ class _CratepageState extends State<Cratepage> {
         SizedBox(
             height: 150,
             child: Stack(children: [Positioned(top: 0, child: WaveSvg())])),
-        CratePagebody(),
+        const CratePagebody(),
       ])),
     );
   }
 }
 
 class CratePagebody extends StatefulWidget {
+  const CratePagebody({Key? key}) : super(key: key);
+
   @override
   State<CratePagebody> createState() => _CratePagebodyState();
 }
 
 class _CratePagebodyState extends State<CratePagebody> {
-  @override
   late String _numofcrates;
   late String _currDist;
   late String _value = "";
@@ -51,10 +53,11 @@ class _CratePagebodyState extends State<CratePagebody> {
     _value = "";
   }
 
+  @override
   Widget build(BuildContext context) {
     Future getCrate() async {
-      final user_box = await Hive.openBox<UserStore>('user');
-      final driver_route = user_box.getAt(0)?.route;
+      final userBox = await Hive.openBox<UserStore>('user');
+      final driverRoute = userBox.getAt(0)?.route;
 
       var distributorSet = <dynamic>[];
       Map<String, dynamic> map = {};
@@ -62,14 +65,14 @@ class _CratePagebodyState extends State<CratePagebody> {
           .collection("Distributors")
           .get()
           .then((QuerySnapshot querySnaphot) {
-        querySnaphot.docs.forEach((doc) {
-          if (doc["Route"] == driver_route) {
+        for (var doc in querySnaphot.docs) {
+          if (doc["Route"] == driverRoute) {
             var name = doc["Name"];
             var crates = doc["Crates"];
             distributorSet.add(doc["Name"]);
             map.addEntries([MapEntry(name, crates)]);
           }
-        });
+        }
       });
 
       return map;
@@ -126,11 +129,10 @@ class _CratePagebodyState extends State<CratePagebody> {
                       },
                       onChanged: (String? data) {
                         {
-                          var CrateRem = finalMap['$data'];
+                          var crateRem = finalMap['$data'];
                           _currDist = data!;
-                          _numofcrates = CrateRem;
+                          _numofcrates = crateRem;
                         }
-                        ;
                       },
                     ),
                     const SizedBox(height: 20.0),
@@ -164,22 +166,18 @@ class _CratePagebodyState extends State<CratePagebody> {
                           style: TextStyle(color: Colors.white),
                         ),
                         onPressed: () {
-                          print(_numofcrates);
-                          print(_currDist);
-                          var final_crate =
+                          var finalCrate =
                               int.parse(_value) - int.parse(_numofcrates);
 
-                          print(final_crate);
                           FirebaseFirestore.instance
                               .collection("Distributors")
                               .get()
                               .then((QuerySnapshot querySnapshot) {
-                            querySnapshot.docs.forEach((doc) {
+                            for (var doc in querySnapshot.docs) {
                               if (doc["Name"] == _currDist) {
-                                doc.reference
-                                    .update({'Crates': '$final_crate'});
+                                doc.reference.update({'Crates': '$finalCrate'});
                               }
-                            });
+                            }
                           });
                         })
                   ]));

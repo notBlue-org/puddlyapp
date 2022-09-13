@@ -48,7 +48,7 @@ class HomePage extends StatelessWidget {
               style: TextStyle(color: kButtonColor),
             ),
             style: ElevatedButton.styleFrom(
-              primary: Colors.transparent,
+              backgroundColor: Colors.transparent,
               // elevation: 0,
               // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
             ),
@@ -77,7 +77,7 @@ Column _getButton(
         width: 150,
         child: TextButton(
           style: ElevatedButton.styleFrom(
-              primary: kPrimaryColor,
+              backgroundColor: kPrimaryColor,
               // side: const BorderSide(width: 2, color: kBackground),
               elevation: 3,
               shape: RoundedRectangleBorder(

@@ -5,8 +5,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driversapp/models/user_stored.dart';
 import 'package:driversapp/static_assets/wave_svg.dart';
-import 'package:driversapp/utils/misc.dart';
-// import 'package:driversapp/static_assets/appbar_wave.dart';
 import 'package:driversapp/widget/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -44,22 +42,22 @@ class StorePageBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future getMap() async {
-      final user_box = await Hive.openBox<UserStore>('user');
-      final driver_route = user_box.getAt(0)?.route;
+      final userBox = await Hive.openBox<UserStore>('user');
+      final driverRoute = userBox.getAt(0)?.route;
       var distributorSet = <dynamic>[];
       Map<String, dynamic> map = {};
       await FirebaseFirestore.instance
           .collection("Distributors")
           .get()
           .then((QuerySnapshot querySnaphot) {
-        querySnaphot.docs.forEach((doc) {
-          if (doc["Route"] == driver_route) {
+        for (var doc in querySnaphot.docs) {
+          if (doc["Route"] == driverRoute) {
             var name = doc["Name"];
-            var Map = doc["Map"];
+            var mapEntry = doc["Map"];
             distributorSet.add(doc["Name"]);
-            map.addEntries([MapEntry(name, Map)]);
+            map.addEntries([MapEntry(name, mapEntry)]);
           }
-        });
+        }
       });
 
       return map;
@@ -79,14 +77,13 @@ class StorePageBody extends StatelessWidget {
           finalMap.forEach((key, value) {
             finalList.add(key);
           });
-          print(snapshot.data);
           return Container(
               padding: const EdgeInsets.all(10.0),
               width: MediaQuery.of(context).size.width, // Full Width of Screen
               height: 500.0,
               child: ListView.builder(
                   itemCount: finalList.length,
-                  itemBuilder: (BuildContext, int index) {
+                  itemBuilder: (context, int index) {
                     const SizedBox(height: 10.0);
 
                     return Card(
@@ -99,12 +96,11 @@ class StorePageBody extends StatelessWidget {
                             color: Colors.lightBlue,
                           ),
                           onTap: () {
-                            print(index);
                             List values = finalMap.values.toList();
-                            var MapCord = values[index];
-                            var Lot = double.parse(MapCord.split(",")[0]);
-                            var Lat = double.parse(MapCord.split(",")[1]);
-                            openMap(Lot, Lat);
+                            var mapCord = values[index];
+                            var lot = double.parse(mapCord.split(",")[0]);
+                            var lat = double.parse(mapCord.split(",")[1]);
+                            openMap(lot, lat);
                           },
                         ));
                   }));

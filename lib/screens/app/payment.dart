@@ -7,12 +7,14 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../../models/user_stored.dart';
 import '../../widget/nav_bar.dart';
 
-class payment extends StatefulWidget {
+class Payment extends StatefulWidget {
+  const Payment({Key? key}) : super(key: key);
+
   @override
-  State<payment> createState() => _paymentState();
+  State<Payment> createState() => _PaymentState();
 }
 
-class _paymentState extends State<payment> {
+class _PaymentState extends State<Payment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,33 +27,34 @@ class _paymentState extends State<payment> {
         SizedBox(
             height: 150,
             child: Stack(children: [Positioned(top: 0, child: WaveSvg())])),
-        paymentBody(),
+        const PaymentBody(),
       ])),
     );
   }
 }
 
-class paymentBody extends StatelessWidget {
+class PaymentBody extends StatelessWidget {
+  const PaymentBody({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     Future getQR() async {
-      final user_box = await Hive.openBox<UserStore>('user');
-      final driver_route = user_box.getAt(0)?.route;
-      final driver_name = user_box.getAt(0)?.username;
+      final userBox = await Hive.openBox<UserStore>('user');
+      final driverRoute = userBox.getAt(0)?.route;
+      final driverName = userBox.getAt(0)?.username;
       List<String> map = [];
       await FirebaseFirestore.instance
           .collection("Drivers")
           .get()
           .then((QuerySnapshot querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-          if (doc["Name"] == driver_name && doc["Route"] == driver_route) {
+        for (var doc in querySnapshot.docs) {
+          if (doc["Name"] == driverName && doc["Route"] == driverRoute) {
             var name = doc["Name"];
-            var QR = doc["QR"];
+            var qr = doc["QR"];
             map.add(name);
-            map.add(QR);
-            print(map);
+            map.add(qr);
           }
-        });
+        }
       });
 
       return map;
@@ -67,8 +70,7 @@ class paymentBody extends StatelessWidget {
               snapshot.connectionState == ConnectionState.done) {
             List<String> finalMap = snapshot.data.cast<String>();
             String imageUrl = finalMap[1];
-            String name = finalMap[0];
-            print(finalMap);
+            // String name = finalMap[0];
             return Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[

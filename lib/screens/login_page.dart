@@ -213,8 +213,7 @@ class _LoginButtonState extends State<LoginButton> {
         },
         style: ElevatedButton.styleFrom(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          primary: kButtonColor,
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)), backgroundColor: kButtonColor,
           textStyle: const TextStyle(
             fontFamily: 'google sans',
             fontSize: 20,
