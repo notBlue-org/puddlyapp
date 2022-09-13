@@ -94,7 +94,7 @@ class StorePageBody extends StatelessWidget {
                         margin: const EdgeInsets.all(10),
                         child: ListTile(
                           title: Text(finalList[index]),
-                          trailing: Icon(
+                          trailing: const Icon(
                             Icons.location_on_outlined,
                             color: Colors.lightBlue,
                           ),
@@ -121,6 +121,6 @@ Future<void> openMap(latitude, longitude) async {
   if (await canLaunch(googleMapUrl)) {
     await launch(googleMapUrl);
   } else {
-    throw 'couldnt laod the url';
+    throw 'couldnt load the url';
   }
 }

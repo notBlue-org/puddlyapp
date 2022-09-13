@@ -32,8 +32,8 @@ class NavDrawer extends StatelessWidget {
                 indent: 10.0,
                 endIndent: 30.0,
               ),
-              _getListTile(
-                  context, Icons.directions_car, 'Store Locator', '/store_page'),
+              _getListTile(context, Icons.directions_car, 'Store Locator',
+                  '/store_page'),
               const Divider(
                 color: Colors.white,
                 indent: 10.0,

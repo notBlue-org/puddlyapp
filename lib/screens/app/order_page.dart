@@ -1,10 +1,12 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:driversapp/screens/app/summary_page.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driversapp/models/user_stored.dart';
 import 'package:driversapp/static_assets/wave_svg.dart';
 import 'package:driversapp/utils/misc.dart';
 import 'package:driversapp/widget/nav_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../../widget/cust_appbar.dart';
@@ -42,48 +44,34 @@ class OrderPageBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future getRouteData() async {
-      var distributorSet = <dynamic>{};
+      var distributorsOnRoute = <dynamic>{};
+      var orderList = [];
       await FirebaseFirestore.instance
           .collection(Misc.getCurrentDate())
           .get()
           .then((QuerySnapshot querySnapshot) {
-        // ignore: avoid_function_literals_in_foreach_calls
         querySnapshot.docs.forEach((doc) {
-          distributorSet.add(doc["DistributorID"]);
+          if (doc["Route"] == "1") {
+            var orderMap = doc.data();
+            distributorsOnRoute.add(doc["DistributorID"]);
+            orderList.add(orderMap);
+          }
         });
-        // print(distributorSet);
       });
-      var distributorsOnRoute = <dynamic>{};
-      // final user_box = Hive.box('user');
-      // final driver_route = user_box.get('route');
-      final user_box = await Hive.openBox<UserStore>('user');
-      final driver_route = user_box.getAt(0)?.route;
-
-      // print(driver_route);
-      // FirebaseFirestore.instance
-      //     .collection('Distributors')
-      //     .where('Route', isEqualTo: driver_route)
-      //     .get()
-      //     .then((QuerySnapshot querySnapshot) {
-      //   querySnapshot.docs.forEach((doc) {
-      //     print(doc["Name"]);
-      //   });
-      // });
-      for (var distributor in distributorSet) {
+      var distributorMap = {};
+      for (var distributor in distributorsOnRoute) {
         await FirebaseFirestore.instance
             .collection('Distributors')
             .doc(distributor)
             .get()
             .then((DocumentSnapshot documentSnapshot) {
           if (documentSnapshot.exists) {
-            var distRoute = documentSnapshot.get("Route");
-            if (distRoute == driver_route) {
-              distributorsOnRoute.add(documentSnapshot.get("DistributorID"));
-            }
+            distributorMap[distributor] = documentSnapshot.data();
           }
         });
       }
-      return ["a"];
+
+      return [distributorMap, orderList];
     }
 
     return FutureBuilder<dynamic>(
@@ -92,17 +80,53 @@ class OrderPageBody extends StatelessWidget {
         if (snapshot.hasError) {
           return const Text("Something went wrong");
         }
-
-        // if (snapshot.hasData) {
-        //   return const Text("Document does not exist");
-        // }
         if (snapshot.hasData &&
             snapshot.connectionState == ConnectionState.done) {
-          print(snapshot.data);
-          return const Text("Full Name");
+          var distributorMap = snapshot.data[0];
+          var orderList = snapshot.data[1];
+          return Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(10),
+              shrinkWrap: true,
+              itemCount: orderList.length,
+              itemBuilder: (ctx, i) => OrderItem(
+                  distributorMapItem: distributorMap,
+                  orderListItem: orderList[i]),
+            ),
+          );
         }
         return const CircularProgressIndicator();
       },
     );
+  }
+}
+
+class OrderItem extends StatelessWidget {
+  final Map distributorMapItem;
+  final Map orderListItem;
+
+  const OrderItem({
+    Key? key,
+    required this.distributorMapItem,
+    required this.orderListItem,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        color: Colors.blue,
+        padding: const EdgeInsets.all(10),
+        alignment: Alignment.centerLeft,
+        child: Column(
+          children: [
+            Text(distributorMapItem["Status"]),
+            Text(orderListItem["Status"]),
+            Text(orderListItem["DistributorID"]),
+            Text(orderListItem["Total Price"].toString()),
+            Text(orderListItem["OTP"]),
+            Text(orderListItem["PaymentType"]),
+            Text(orderListItem["Route"]),
+          ],
+        ));
   }
 }
