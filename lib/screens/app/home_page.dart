@@ -27,8 +27,8 @@ class HomePage extends StatelessWidget {
               children: <Widget>[
                 _getButton(context, Icons.directions_car, "Store Locator",
                     "/store_page"),
-                _getButton(
-                    context, Icons.shopping_cart, "My Orders", "/order_page"),
+                _getButton(context, Icons.shopping_cart, "Delivery List",
+                    "/order_page"),
                 _getButton(context, Icons.all_inbox_sharp, "Crate Management",
                     "/crate_page"),
               ],

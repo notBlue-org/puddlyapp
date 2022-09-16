@@ -1,6 +1,7 @@
 import 'package:driversapp/screens/app/crate_page.dart';
 import 'package:driversapp/screens/app/home_page.dart';
 import 'package:driversapp/screens/app/order_page.dart';
+import 'package:driversapp/screens/app/order_page_preview.dart';
 import 'package:driversapp/screens/app/store_page.dart';
 import 'package:driversapp/screens/login_page.dart';
 import 'package:driversapp/static_assets/profile_page.dart';
@@ -21,6 +22,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const StorePage());
       case '/profile_page':
         return MaterialPageRoute(builder: (_) => const ProfilePage());
+      // case '/order_page_preview':
+      //   return MaterialPageRoute(builder: (_) => OrderPreviewPage());
       default:
         return _errorRoute();
     }

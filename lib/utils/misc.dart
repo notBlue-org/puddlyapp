@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driversapp/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Validator {
   static String? validate({required String email, required String password}) {
@@ -87,5 +88,17 @@ class Misc {
         "-" +
         now.year.toString().substring(2, 4);
     return orderDate;
+  }
+
+  static List getFiveDaysDate() {
+    DateFormat formatter = DateFormat('dd-MM-yy');
+    var fiveDaysDate = [];
+    print(DateTime.now());
+    for (int i = 0; i < 5; i++) {
+      DateTime nowFiveDaysAgo = DateTime.now().add(Duration(days: -i));
+      String formatted = formatter.format(nowFiveDaysAgo);
+      fiveDaysDate.add("Orders_$formatted");
+    }
+    return fiveDaysDate;
   }
 }

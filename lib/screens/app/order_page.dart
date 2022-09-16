@@ -1,6 +1,3 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:driversapp/screens/app/summary_page.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driversapp/models/user_stored.dart';
 import 'package:driversapp/static_assets/wave_svg.dart';
@@ -10,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../../widget/cust_appbar.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'order_page_preview.dart';
 
 class OrderPage extends StatefulWidget {
   const OrderPage({Key? key}) : super(key: key);
@@ -24,7 +22,7 @@ class _OrderPageState extends State<OrderPage> {
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
       drawer: const NavDrawer(),
-      appBar: custAppBar("My Orders"),
+      appBar: custAppBar("Delivery List"),
       body: Center(
           child: Column(children: [
         SizedBox(
@@ -44,25 +42,52 @@ class OrderPageBody extends StatelessWidget {
     Future getRouteData() async {
       var distributorsOnRoute = <dynamic>{};
       var distToOrderMap = {};
+      var brandToProductMap = {};
+      var allProductDetails = {};
+
       final userBox = await Hive.openBox<UserStore>('user');
       final driverRoute = userBox.getAt(0)?.route;
-      await FirebaseFirestore.instance
-          .collection(Misc.getCurrentDate())
-          .get()
-          .then((QuerySnapshot querySnapshot) {
-        for (var doc in querySnapshot.docs) {
-          if (doc["Route"] == driverRoute) {
+
+      var fiveDaysDates = Misc.getFiveDaysDate();
+      for (var i = 0; i < fiveDaysDates.length; i++) {
+        final orderRef =
+            FirebaseFirestore.instance.collection(fiveDaysDates[i]);
+        final orderQuery = orderRef.where("Route", isEqualTo: driverRoute);
+        await orderQuery.get().then((QuerySnapshot querySnapshot) {
+          for (var doc in querySnapshot.docs) {
             var distributor = doc["DistributorID"];
             distributorsOnRoute.add(distributor);
-            // DateTime nowFiveDaysAgo = DateTime.now().add(Duration(days: -5));
+            for (var product in doc["ProductList"].keys.toList()) {
+              var brand = doc["ProductList"][product][1];
+              if (brandToProductMap.containsKey(brand)) {
+                brandToProductMap[brand].add(product);
+              } else {
+                brandToProductMap[brand] = [product];
+              }
+            }
             if (distToOrderMap.containsKey(distributor)) {
               distToOrderMap[distributor].add(doc.data());
             } else {
               distToOrderMap[distributor] = [doc.data()];
             }
           }
+        });
+      }
+
+      for (var brand in brandToProductMap.keys.toList()) {
+        var brandRef = FirebaseFirestore.instance.collection(brand);
+        for (var product in brandToProductMap[brand]) {
+          await brandRef
+              .doc(product)
+              .get()
+              .then((DocumentSnapshot documentSnapshot) {
+            if (documentSnapshot.exists) {
+              allProductDetails[product] = documentSnapshot.data();
+            }
+          });
         }
-      });
+      }
+
       var distributorMap = {};
       for (var distributor in distributorsOnRoute) {
         await FirebaseFirestore.instance
@@ -75,8 +100,7 @@ class OrderPageBody extends StatelessWidget {
           }
         });
       }
-
-      return [distributorMap, distToOrderMap];
+      return [distributorMap, distToOrderMap, allProductDetails];
     }
 
     return FutureBuilder<dynamic>(
@@ -89,15 +113,18 @@ class OrderPageBody extends StatelessWidget {
             snapshot.connectionState == ConnectionState.done) {
           var distributorMap = snapshot.data[0];
           var distToOrderMap = snapshot.data[1];
+          var allProductDetails = snapshot.data[2];
           return Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(10),
               shrinkWrap: true,
               itemCount: distToOrderMap.length,
               itemBuilder: (ctx, i) => OrderItem(
-                  distributorMapItem: distributorMap,
-                  orderList: distToOrderMap[distToOrderMap.keys.toList()[i]],
-                  distributorID: distToOrderMap.keys.toList()[i]),
+                distributorMapItem: distributorMap,
+                orderList: distToOrderMap[distToOrderMap.keys.toList()[i]],
+                distributorID: distToOrderMap.keys.toList()[i],
+                allProductDetails: allProductDetails,
+              ),
             ),
           );
         }
@@ -107,21 +134,27 @@ class OrderPageBody extends StatelessWidget {
   }
 }
 
-class OrderItem extends StatelessWidget {
+class OrderItem extends StatefulWidget {
   final Map distributorMapItem;
   final List orderList;
   final String distributorID;
+  final Map allProductDetails;
 
-  const OrderItem({
-    Key? key,
-    required this.distributorMapItem,
-    required this.orderList,
-    required this.distributorID,
-  }) : super(key: key);
+  const OrderItem(
+      {Key? key,
+      required this.distributorMapItem,
+      required this.orderList,
+      required this.distributorID,
+      required this.allProductDetails})
+      : super(key: key);
 
   @override
+  State<OrderItem> createState() => _OrderItemState();
+}
+
+class _OrderItemState extends State<OrderItem> {
+  @override
   Widget build(BuildContext context) {
-    // print(.runtimeType);
     return Container(
         margin: const EdgeInsets.all(10),
         decoration: const BoxDecoration(
@@ -143,22 +176,41 @@ class OrderItem extends StatelessWidget {
             Column(
               children: [
                 Text(
-                  distributorMapItem[distributorID]["Name"],
+                  widget.distributorMapItem[widget.distributorID]["Name"],
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Text(distributorMapItem[distributorID]["Address"]),
+                Text(
+                    widget.distributorMapItem[widget.distributorID]["Address"]),
               ],
             ),
             Row(
               children: [
-                Text(orderList[0]["Status"]),
-                const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: Colors.grey,
-                  size: 20.0,
-                  textDirection: TextDirection.ltr,
-                  semanticLabel: 'Icon',
-                ),
+                Text(widget.orderList[0]["Status"]),
+                IconButton(
+                    icon: const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 20.0,
+                      color: Colors.grey,
+                      semanticLabel: 'Icon',
+                    ),
+                    onPressed: () async {
+                      await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OrderPreviewPage(
+                                widget.orderList,
+                                widget.distributorID,
+                                widget.distributorMapItem,
+                                widget.allProductDetails),
+                          ));
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const OrderPage()), // this mainpage is your page to refresh
+                        (Route<dynamic> route) => false,
+                      );
+                    })
               ],
             ),
           ],
