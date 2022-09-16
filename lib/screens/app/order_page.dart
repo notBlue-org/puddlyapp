@@ -42,8 +42,6 @@ class OrderPageBody extends StatelessWidget {
     Future getRouteData() async {
       var distributorsOnRoute = <dynamic>{};
       var distToOrderMap = {};
-      var brandToProductMap = {};
-      var allProductDetails = {};
 
       final userBox = await Hive.openBox<UserStore>('user');
       final driverRoute = userBox.getAt(0)?.route;
@@ -59,14 +57,7 @@ class OrderPageBody extends StatelessWidget {
           for (var doc in querySnapshot.docs) {
             var distributor = doc["DistributorID"];
             distributorsOnRoute.add(distributor);
-            for (var product in doc["ProductList"].keys.toList()) {
-              var brand = doc["ProductList"][product][1];
-              if (brandToProductMap.containsKey(brand)) {
-                brandToProductMap[brand].add(product);
-              } else {
-                brandToProductMap[brand] = [product];
-              }
-            }
+
             if (distToOrderMap.containsKey(distributor)) {
               distToOrderMap[distributor].add(doc.data());
             } else {
@@ -74,20 +65,6 @@ class OrderPageBody extends StatelessWidget {
             }
           }
         });
-      }
-
-      for (var brand in brandToProductMap.keys.toList()) {
-        var brandRef = FirebaseFirestore.instance.collection(brand);
-        for (var product in brandToProductMap[brand]) {
-          await brandRef
-              .doc(product)
-              .get()
-              .then((DocumentSnapshot documentSnapshot) {
-            if (documentSnapshot.exists) {
-              allProductDetails[product] = documentSnapshot.data();
-            }
-          });
-        }
       }
 
       var distributorMap = {};
@@ -102,7 +79,7 @@ class OrderPageBody extends StatelessWidget {
           }
         });
       }
-      return [distributorMap, distToOrderMap, allProductDetails];
+      return [distributorMap, distToOrderMap];
     }
 
     return FutureBuilder<dynamic>(
@@ -115,7 +92,6 @@ class OrderPageBody extends StatelessWidget {
             snapshot.connectionState == ConnectionState.done) {
           var distributorMap = snapshot.data[0];
           var distToOrderMap = snapshot.data[1];
-          var allProductDetails = snapshot.data[2];
           return Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(10),
@@ -125,7 +101,6 @@ class OrderPageBody extends StatelessWidget {
                 distributorMapItem: distributorMap,
                 orderList: distToOrderMap[distToOrderMap.keys.toList()[i]],
                 distributorID: distToOrderMap.keys.toList()[i],
-                allProductDetails: allProductDetails,
               ),
             ),
           );
@@ -140,14 +115,12 @@ class OrderItem extends StatefulWidget {
   final Map distributorMapItem;
   final List orderList;
   final String distributorID;
-  final Map allProductDetails;
 
   const OrderItem(
       {Key? key,
       required this.distributorMapItem,
       required this.orderList,
-      required this.distributorID,
-      required this.allProductDetails})
+      required this.distributorID})
       : super(key: key);
 
   @override
@@ -202,8 +175,7 @@ class _OrderItemState extends State<OrderItem> {
                             builder: (context) => OrderPreviewPage(
                                 widget.orderList,
                                 widget.distributorID,
-                                widget.distributorMapItem,
-                                widget.allProductDetails),
+                                widget.distributorMapItem),
                           ));
                       Navigator.pushAndRemoveUntil(
                         context,
