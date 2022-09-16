@@ -5,6 +5,7 @@ import 'package:driversapp/widget/nav_bar.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:driversapp/screens/app/home_page.dart';
 
 import '../../models/user_stored.dart';
 
@@ -145,14 +146,15 @@ class _CratePagebodyState extends State<CratePagebody> {
                     TextFormField(
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                          hintText: 'Returned Number of Crates are',
+                          hintText: 'Returned Number of Crates are ',
                           border: OutlineInputBorder(
                               borderSide: const BorderSide(
                                   color: Colors.grey, width: 32.0),
                               borderRadius: BorderRadius.circular(5.0)),
                           focusedBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
-                                  color: Colors.grey, width: 1.0),
+                                  color: Color.fromARGB(255, 192, 103, 103),
+                                  width: 1.0),
                               borderRadius: BorderRadius.circular(5.0))),
                       onChanged: (value) {
                         _value = value;
@@ -166,8 +168,10 @@ class _CratePagebodyState extends State<CratePagebody> {
                           style: TextStyle(color: Colors.white),
                         ),
                         onPressed: () {
-                          var finalCrate =
-                              int.parse(_value) - int.parse(_numofcrates);
+                          int finalCrate = 0;
+
+                          finalCrate =
+                              int.parse(_numofcrates) - int.parse(_value);
 
                           FirebaseFirestore.instance
                               .collection("Distributors")
@@ -175,7 +179,12 @@ class _CratePagebodyState extends State<CratePagebody> {
                               .then((QuerySnapshot querySnapshot) {
                             for (var doc in querySnapshot.docs) {
                               if (doc["Name"] == _currDist) {
+                                print(_numofcrates);
+                                print(_value);
                                 doc.reference.update({'Crates': '$finalCrate'});
+
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => const HomePage()));
                               }
                             }
                           });

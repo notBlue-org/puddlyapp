@@ -1,48 +1,42 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:driversapp/screens/app/payment.dart';
 import 'package:flutter_verification_code/flutter_verification_code.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-class Verificatoin extends StatefulWidget {
-  const Verificatoin({Key? key}) : super(key: key);
+class Verification extends StatefulWidget {
+  final List Otplist;
+  const Verification({Key? key, required this.Otplist}) : super(key: key);
 
   @override
-  _VerificatoinState createState() => _VerificatoinState();
+  _VerificationState createState() => _VerificationState();
 }
 
-class _VerificatoinState extends State<Verificatoin> {
+class _VerificationState extends State<Verification> {
   bool _isResendAgain = false;
   final bool _isVerified = false;
   bool _isLoading = false;
 
   String _code = '';
 
-  late Timer _timer;
-  int _start = 60;
+  final int _start = 60;
   int _currentIndex = 0;
 
   void resend() {
     setState(() {
       _isResendAgain = true;
     });
-
-    const oneSec = Duration(seconds: 1);
-    _timer = Timer.periodic(oneSec, (timer) {
-      setState(() {
-        if (_start == 0) {
-          _start = 60;
-          _isResendAgain = false;
-          timer.cancel();
-        } else {
-          _start--;
-        }
-      });
-    });
   }
 
   verify() {
     setState(() {
       _isLoading = true;
+
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Payment(),
+          ));
     });
   }
 
@@ -72,8 +66,9 @@ class _VerificatoinState extends State<Verificatoin> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
+                  const SizedBox(
                       height: 250,
+                      // ignore: unnecessary_const
                       child: const Image(
                         image: AssetImage('assets/images/email.png'),
                       )),
@@ -165,10 +160,10 @@ class _VerificatoinState extends State<Verificatoin> {
                       minWidth: MediaQuery.of(context).size.width * 0.8,
                       height: 50,
                       child: _isLoading
-                          ? Container(
+                          ? const SizedBox(
                               width: 20,
                               height: 20,
-                              child: const CircularProgressIndicator(
+                              child: CircularProgressIndicator(
                                 backgroundColor: Colors.white,
                                 strokeWidth: 3,
                                 color: Colors.black,

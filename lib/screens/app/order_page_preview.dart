@@ -1,3 +1,4 @@
+import 'package:driversapp/screens/app/otp_page.dart';
 import 'package:driversapp/static_assets/wave_svg.dart';
 import 'package:driversapp/widget/nav_bar.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,10 @@ class OrderPreviewPage extends StatelessWidget {
               {allProductDetails[product]["Quantity"] = quantBrand[0]}
           });
     }
+    final otplist = <dynamic>[];
+    for (var otp in orderList) {
+      otplist.add(otp["OTP"]);
+    }
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -47,8 +52,17 @@ class OrderPreviewPage extends StatelessWidget {
             itemCount: finalProductList.length,
             scrollDirection: Axis.vertical,
           ),
+          const SizedBox(
+            height: 20,
+          ),
           ElevatedButton(
-              onPressed: () async {},
+              onPressed: () async {
+                print(otplist);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Verification(otplist)));
+              },
               style: ElevatedButton.styleFrom(backgroundColor: kButtonColor),
               child: const Text('Enter OTP')),
         ])),
@@ -66,6 +80,7 @@ class OrderPreviewItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+
     return Column(
       children: [
         Container(
