@@ -52,7 +52,9 @@ class OrderPageBody extends StatelessWidget {
       for (var i = 0; i < fiveDaysDates.length; i++) {
         final orderRef =
             FirebaseFirestore.instance.collection(fiveDaysDates[i]);
-        final orderQuery = orderRef.where("Route", isEqualTo: driverRoute);
+        final orderQuery = orderRef
+            .where("Route", isEqualTo: driverRoute)
+            .where("Status", isEqualTo: "Ordered");
         await orderQuery.get().then((QuerySnapshot querySnapshot) {
           for (var doc in querySnapshot.docs) {
             var distributor = doc["DistributorID"];

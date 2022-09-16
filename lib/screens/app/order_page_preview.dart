@@ -79,70 +79,100 @@ class OrderPreviewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-
-    return Column(
-      children: [
-        Container(
-            decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Color.fromRGBO(13, 21, 129, 0.03),
-                    blurRadius: 100.0,
-                    offset: Offset(0, 10.0),
-                    spreadRadius: 2,
-                  ),
-                ]),
-            padding: const EdgeInsets.all(10),
-            alignment: Alignment.centerLeft,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: width * 0.2,
-                      child: Text(finalProductMap[finalProductKey]["Name"],
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                    ),
-                    Text(
-                      "($finalProductKey)",
-                    ),
-                    // SizedBox(width: 50),
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Text(
-                      "Quantity: ",
-                      style: TextStyle(color: Colors.black87),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      finalProductMap[finalProductKey]["Quantity"].toString(),
-                      style: const TextStyle(color: Colors.black87),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Text(
-                      "Desc: ",
-                      style: TextStyle(color: Colors.black87),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      finalProductMap[finalProductKey]["Description"]
-                          .toString(),
-                      style: const TextStyle(color: Colors.black87),
-                    ),
-                  ],
-                ),
-              ],
-            )),
-      ],
+    return Card(
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: const Color(0xff764abc),
+          child: Text(finalProductKey),
+        ),
+        title: Text(finalProductMap[finalProductKey]["Quantity"].toString()),
+        subtitle: Text('Item description'),
+        trailing: Icon(Icons.more_vert),
+      ),
     );
   }
 }
+
+// Normal Card
+    // return Card(
+    //   child: ListTile(
+    //     title: Text(finalProductKey),
+    //     subtitle: Text(finalProductMap[finalProductKey]["Quantity"].toString()),
+    //   ),
+    // );
+
+// class OrderPreviewItem extends StatelessWidget {
+//   final String finalProductKey;
+//   final Map finalProductMap;
+//   const OrderPreviewItem(this.finalProductKey, this.finalProductMap, {Key? key})
+//       : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     double width = MediaQuery.of(context).size.width;
+
+//     return Column(
+//       children: [
+//         Container(
+//             decoration: const BoxDecoration(
+//                 color: Colors.white,
+//                 borderRadius: BorderRadius.all(Radius.circular(10)),
+//                 boxShadow: [
+//                   BoxShadow(
+//                     color: Color.fromRGBO(13, 21, 129, 0.03),
+//                     blurRadius: 100.0,
+//                     offset: Offset(0, 10.0),
+//                     spreadRadius: 2,
+//                   ),
+//                 ]),
+//             padding: const EdgeInsets.all(10),
+//             alignment: Alignment.centerLeft,
+//             child: Column(
+//               children: [
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.start,
+//                   children: [
+//                     SizedBox(
+//                       width: width * 0.2,
+//                       child: Text(finalProductMap[finalProductKey]["Name"],
+//                           style: const TextStyle(fontWeight: FontWeight.bold)),
+//                     ),
+//                     Text(
+//                       "($finalProductKey)",
+//                     ),
+//                     // SizedBox(width: 50),
+//                   ],
+//                 ),
+//                 Row(
+//                   children: [
+//                     const Text(
+//                       "Quantity: ",
+//                       style: TextStyle(color: Colors.black87),
+//                     ),
+//                     const SizedBox(height: 10),
+//                     Text(
+//                       finalProductMap[finalProductKey]["Quantity"].toString(),
+//                       style: const TextStyle(color: Colors.black87),
+//                     ),
+//                   ],
+//                 ),
+//                 Row(
+//                   children: [
+//                     const Text(
+//                       "Desc: ",
+//                       style: TextStyle(color: Colors.black87),
+//                     ),
+//                     const SizedBox(height: 10),
+//                     Text(
+//                       finalProductMap[finalProductKey]["Description"]
+//                           .toString(),
+//                       style: const TextStyle(color: Colors.black87),
+//                     ),
+//                   ],
+//                 ),
+//               ],
+//             )),
+//       ],
+//     );
+//   }
+// }

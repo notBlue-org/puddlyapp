@@ -112,6 +112,7 @@ class StorePageBody extends StatelessWidget {
 }
 
 Future<void> openMap(latitude, longitude) async {
+  print(latitude);
   String googleMapUrl =
       "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude";
   if (await canLaunch(googleMapUrl)) {
