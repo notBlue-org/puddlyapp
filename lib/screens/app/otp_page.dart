@@ -27,18 +27,6 @@ class _VerificationState extends State<Verification> {
     });
   }
 
-  verify() {
-    setState(() {
-      _isLoading = true;
-
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const Payment(),
-          ));
-    });
-  }
-
   @override
   void initState() {
     Timer.periodic(const Duration(seconds: 5), (timer) {
@@ -50,6 +38,47 @@ class _VerificationState extends State<Verification> {
     });
 
     super.initState();
+  }
+
+  verify() {
+    setState(() {
+      void showSnackBarAsBottomSheet(BuildContext context, String message) {
+        showModalBottomSheet<void>(
+          context: context,
+          barrierColor: const Color.fromRGBO(0, 0, 0, 0),
+          builder: (BuildContext context) {
+            Future.delayed(const Duration(seconds: 5), () {
+              try {
+                Navigator.pop(context);
+              } on Exception {}
+            });
+            return Container(
+                color: Colors.grey.shade800,
+                padding: const EdgeInsets.all(12),
+                child: Wrap(children: [
+                  Text(
+                    message,
+                    style: const TextStyle(color: Colors.white),
+                  )
+                ]));
+          },
+        );
+      }
+
+      List<dynamic> newList = widget.Otplist;
+
+      _isLoading = true;
+      bool found = newList.contains(_code);
+      if (found) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const Payment(),
+            ));
+      } else {
+        showSnackBarAsBottomSheet(context, "Invalid OTP");
+      }
+    });
   }
 
   @override
@@ -85,6 +114,7 @@ class _VerificationState extends State<Verification> {
                   SizedBox(
                     height: 30,
                   ),
+
                   FadeInDown(
                     child: Text(
                       "Please enter the 4 digit code sent",
