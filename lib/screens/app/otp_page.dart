@@ -6,7 +6,7 @@ import 'dart:async';
 
 class Verification extends StatefulWidget {
   final List Otplist;
-  const Verification({Key? key, required this.Otplist}) : super(key: key);
+  const Verification(this.Otplist);
 
   @override
   _VerificationState createState() => _VerificationState();
@@ -16,7 +16,6 @@ class _VerificationState extends State<Verification> {
   bool _isResendAgain = false;
   final bool _isVerified = false;
   bool _isLoading = false;
-
   String _code = '';
 
   final int _start = 60;
