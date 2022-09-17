@@ -44,10 +44,13 @@ class OrderPreviewPage extends StatelessWidget {
           ),
           ElevatedButton(
               onPressed: () async {
+                print(otplist);
+                print(distributorID);
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => Verification(otplist)));
+                        builder: (context) =>
+                            Verification(otplist, orderList)));
               },
               style: ElevatedButton.styleFrom(backgroundColor: kButtonColor),
               child: const Text('Enter OTP')),

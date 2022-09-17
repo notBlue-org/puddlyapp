@@ -8,15 +8,16 @@ import '../../models/user_stored.dart';
 import '../../widget/nav_bar.dart';
 
 class Payment extends StatefulWidget {
-  const Payment({Key? key}) : super(key: key);
+  final List orderList;
+  const Payment(this.orderList, {Key? key}) : super(key: key);
 
   @override
   State<Payment> createState() => _PaymentState();
 }
 
 class _PaymentState extends State<Payment> {
-  @override
   Widget build(BuildContext context) {
+    List orderList = widget.orderList;
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
@@ -27,14 +28,15 @@ class _PaymentState extends State<Payment> {
         SizedBox(
             height: 150,
             child: Stack(children: [Positioned(top: 0, child: WaveSvg())])),
-        const PaymentBody(),
+        PaymentBody(orderList),
       ])),
     );
   }
 }
 
 class PaymentBody extends StatelessWidget {
-  const PaymentBody({Key? key}) : super(key: key);
+  final List orderList;
+  const PaymentBody(this.orderList, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -70,8 +72,10 @@ class PaymentBody extends StatelessWidget {
               snapshot.connectionState == ConnectionState.done) {
             List<String> finalMap = snapshot.data.cast<String>();
             String imageUrl = finalMap[1];
+            print(orderList);
+
             // String name = finalMap[0];
-            return Row(
+            return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const SizedBox(
@@ -84,6 +88,16 @@ class PaymentBody extends StatelessWidget {
                   height: 250,
                   width: 250,
                 ),
+                const SizedBox(
+                  height: 25,
+                  width: 25,
+                ),
+                ElevatedButton(
+                  child: const Text("Confirm Order",
+                      style: TextStyle(fontSize: 30)),
+                  onPressed: () {},
+                  //function
+                )
               ],
             );
           }
