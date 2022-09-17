@@ -8,7 +8,7 @@ import 'package:driversapp/static_assets/wave_svg.dart';
 import 'package:driversapp/widget/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:map_launcher/map_launcher.dart';
 import '../../widget/cust_appbar.dart';
 
 class StorePage extends StatefulWidget {
@@ -90,34 +90,27 @@ class StorePageBody extends StatelessWidget {
                         elevation: 6,
                         margin: const EdgeInsets.all(10),
                         child: ListTile(
-                          title: Text(finalList[index]),
-                          trailing: const Icon(
-                            Icons.location_on_outlined,
-                            color: Colors.lightBlue,
-                          ),
-                          onTap: () {
-                            List values = finalMap.values.toList();
-                            var mapCord = values[index];
-                            var lot = double.parse(mapCord.split(",")[0]);
-                            var lat = double.parse(mapCord.split(",")[1]);
-                            openMap(lot, lat);
-                          },
-                        ));
+                            title: Text(finalList[index]),
+                            trailing: const Icon(
+                              Icons.location_on_outlined,
+                              color: Colors.lightBlue,
+                            ),
+                            onTap: () async {
+                              List values = finalMap.values.toList();
+                              var mapCord = values[index];
+                              var lot = double.parse(mapCord.split(",")[0]);
+                              var lat = double.parse(mapCord.split(",")[1]);
+                              final availableMap =
+                                  await MapLauncher.installedMaps;
+                              print(availableMap);
+                              await availableMap.first.showMarker(
+                                  coords: Coords(lot, lat),
+                                  title: finalList[index]);
+                            }));
                   }));
         }
         return const CircularProgressIndicator();
       },
     );
-  }
-}
-
-Future<void> openMap(latitude, longitude) async {
-  print(latitude);
-  String googleMapUrl =
-      "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude";
-  if (await canLaunch(googleMapUrl)) {
-    await launch(googleMapUrl);
-  } else {
-    throw 'couldnt load the url';
   }
 }
