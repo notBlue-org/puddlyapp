@@ -21,7 +21,7 @@ class _SuccessState extends State<SuccessPage> {
             emptyMsg: 'Success !!',
           ),
           const SubTitle(
-            subTitleText: 'Your order was made successfully',
+            subTitleText: 'Your have sucessfully delivered this order',
           ),
           ElevatedButton(
             child: const Text('Go back Home'),

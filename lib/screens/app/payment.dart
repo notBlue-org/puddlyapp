@@ -104,15 +104,15 @@ class PaymentBody extends StatelessWidget {
                           builder: (context) => const SuccessPage()),
                     );
 
-                    // for (var order in orderList) {
-                    //   final statusUpdateRef = FirebaseFirestore.instance
-                    //       .collection(order["CollectionName"])
-                    //       .doc(order["OrderID"]);
-                    //   statusUpdateRef.update({"Status": "Delivered"}).then(
-                    //       (value) =>
-                    //           print("DocumentSnapshot successfully updated!"),
-                    //       onError: (e) => print("Error updating document $e"));
-                    // }
+                    for (var order in orderList) {
+                      final statusUpdateRef = FirebaseFirestore.instance
+                          .collection(order["CollectionName"])
+                          .doc(order["OrderID"]);
+                      statusUpdateRef.update({"Status": "Delivered"}).then(
+                          (value) =>
+                              print("DocumentSnapshot successfully updated!"),
+                          onError: (e) => print("Error updating document $e"));
+                    }
                   },
                   style:
                       ElevatedButton.styleFrom(backgroundColor: kButtonColor),

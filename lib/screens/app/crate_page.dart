@@ -43,13 +43,13 @@ class CratePagebody extends StatefulWidget {
 }
 
 class _CratePagebodyState extends State<CratePagebody> {
-  late String _numofcrates;
+  late String crateRem;
   late String _currDist;
   late String _value = "";
   @override
   void initState() {
     super.initState();
-    _numofcrates = "";
+
     _currDist = "";
     _value = "";
   }
@@ -98,8 +98,6 @@ class _CratePagebodyState extends State<CratePagebody> {
             crates.add(value);
           });
 
-          _numofcrates = crates[0];
-
           return Container(
               padding: const EdgeInsets.all(10.0),
               width: MediaQuery.of(context).size.width, // Full Width of Screen
@@ -128,11 +126,12 @@ class _CratePagebodyState extends State<CratePagebody> {
                           return null;
                         }
                       },
-                      onChanged: (String? data) {
+                      onChanged: (String? data) async {
                         {
+                          print(data);
                           var crateRem = finalMap['$data'];
+                          print(crateRem);
                           _currDist = data!;
-                          _numofcrates = crateRem;
                         }
                       },
                     ),
@@ -146,7 +145,7 @@ class _CratePagebodyState extends State<CratePagebody> {
                     TextFormField(
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                          hintText: 'Returned Number of Crates are ',
+                          hintText: 'Returned Number of Crates are $crateRem',
                           border: OutlineInputBorder(
                               borderSide: const BorderSide(
                                   color: Colors.grey, width: 32.0),
@@ -165,24 +164,23 @@ class _CratePagebodyState extends State<CratePagebody> {
                         color: Colors.lightBlueAccent,
                         child: const Text(
                           'Submit',
-                          style: TextStyle(color: Colors.white),
+                          style:
+                              TextStyle(color: Color.fromARGB(255, 17, 12, 12)),
                         ),
                         onPressed: () {
-                          int finalCrate = 0;
+                          print(crateRem);
+                          print(_value);
 
-                          finalCrate =
-                              int.parse(_numofcrates) - int.parse(_value);
-
+                          int finalCrate =
+                              int.parse(crateRem) - int.parse(_value);
+                          print(finalCrate);
                           FirebaseFirestore.instance
                               .collection("Distributors")
                               .get()
                               .then((QuerySnapshot querySnapshot) {
                             for (var doc in querySnapshot.docs) {
                               if (doc["Name"] == _currDist) {
-                                print(_numofcrates);
-                                print(_value);
                                 doc.reference.update({'Crates': '$finalCrate'});
-
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => const HomePage()));
                               }
