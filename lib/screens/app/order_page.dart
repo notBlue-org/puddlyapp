@@ -63,6 +63,9 @@ class OrderPageBody extends StatelessWidget {
             } else {
               distToOrderMap[distributor] = [doc.data()];
             }
+            distToOrderMap[distributor].last["CollectionName"] =
+                fiveDaysDates[i];
+            distToOrderMap[distributor].last["OrderID"] = doc.id;
           }
         });
       }

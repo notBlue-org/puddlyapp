@@ -44,8 +44,6 @@ class OrderPreviewPage extends StatelessWidget {
           ),
           ElevatedButton(
               onPressed: () async {
-                print(otplist);
-                print(distributorID);
                 Navigator.push(
                     context,
                     MaterialPageRoute(

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:driversapp/constants/colors.dart';
 import 'package:driversapp/static_assets/wave_svg.dart';
 import 'package:driversapp/widget/cust_appbar.dart';
 import 'package:flutter/material.dart';
@@ -93,11 +94,21 @@ class PaymentBody extends StatelessWidget {
                   width: 25,
                 ),
                 ElevatedButton(
-                  child: const Text("Confirm Order",
-                      style: TextStyle(fontSize: 30)),
-                  onPressed: () {},
-                  //function
-                )
+                  child: const Text("Confirm Order"),
+                  onPressed: () {
+                    for (var order in orderList) {
+                      final statusUpdateRef = FirebaseFirestore.instance
+                          .collection(order["CollectionName"])
+                          .doc(order["OrderID"]);
+                      statusUpdateRef.update({"Status": "Delivered"}).then(
+                          (value) =>
+                              print("DocumentSnapshot successfully updated!"),
+                          onError: (e) => print("Error updating document $e"));
+                    }
+                  },
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: kButtonColor),
+                ),
               ],
             );
           }
