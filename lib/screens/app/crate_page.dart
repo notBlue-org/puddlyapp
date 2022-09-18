@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driversapp/static_assets/wave_svg.dart';
+import 'package:driversapp/utils/misc.dart';
 import 'package:driversapp/widget/cust_appbar.dart';
 import 'package:driversapp/widget/nav_bar.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:driversapp/screens/app/home_page.dart';
-
+import 'package:dropdown_button2/dropdown_button2.dart';
 import '../../models/user_stored.dart';
 
 class Cratepage extends StatefulWidget {
@@ -49,7 +50,7 @@ class _CratePagebodyState extends State<CratePagebody> {
   @override
   void initState() {
     super.initState();
-
+    crateRem = "";
     _currDist = "";
     _value = "";
   }
@@ -129,7 +130,7 @@ class _CratePagebodyState extends State<CratePagebody> {
                       onChanged: (String? data) async {
                         {
                           print(data);
-                          var crateRem = finalMap['$data'];
+                          crateRem = finalMap['$data'];
                           print(crateRem);
                           _currDist = data!;
                         }
@@ -168,6 +169,11 @@ class _CratePagebodyState extends State<CratePagebody> {
                               TextStyle(color: Color.fromARGB(255, 17, 12, 12)),
                         ),
                         onPressed: () {
+                          if (_value == "") {
+                            Misc.createSnackbar(context,
+                                "Please enter the number of crates recieved");
+                            return;
+                          }
                           print(crateRem);
                           print(_value);
 
