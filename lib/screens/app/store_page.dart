@@ -48,15 +48,14 @@ class StorePageBody extends StatelessWidget {
       Map<String, dynamic> map = {};
       await FirebaseFirestore.instance
           .collection("Distributors")
+          .where("Route", isEqualTo: driverRoute)
           .get()
           .then((QuerySnapshot querySnaphot) {
         for (var doc in querySnaphot.docs) {
-          if (doc["Route"] == driverRoute) {
-            var name = doc["Name"];
-            var mapEntry = doc["Map"];
-            distributorSet.add(doc["Name"]);
-            map.addEntries([MapEntry(name, mapEntry)]);
-          }
+          var name = doc["Name"];
+          var mapEntry = doc["Map"];
+          distributorSet.add(doc["Name"]);
+          map.addEntries([MapEntry(name, mapEntry)]);
         }
       });
 
@@ -102,7 +101,6 @@ class StorePageBody extends StatelessWidget {
                               var lat = double.parse(mapCord.split(",")[1]);
                               final availableMap =
                                   await MapLauncher.installedMaps;
-                              print(availableMap);
                               await availableMap.first.showMarker(
                                   coords: Coords(lot, lat),
                                   title: finalList[index]);

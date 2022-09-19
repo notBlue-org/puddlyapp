@@ -1,4 +1,5 @@
 import 'package:driversapp/constants/colors.dart';
+import 'package:driversapp/static_assets/bottom_wave.dart';
 import 'package:driversapp/static_assets/wave_svg.dart';
 import 'package:driversapp/utils/login.dart';
 import 'package:driversapp/widget/cust_appbar.dart';
@@ -9,6 +10,8 @@ class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    print(height);
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
@@ -58,10 +61,10 @@ class HomePage extends StatelessWidget {
           ),
         ),
         // TODO: Get smaller bottom bar svg from anji
-        // Positioned(
-        //   bottom: -320,
-        //   child: BottomWave(),
-        // )
+        Expanded(
+            child: Stack(children: [
+          Positioned(bottom: -0.25 * height, left: -20, child: BottomWave())
+        ])),
       ]),
     );
   }

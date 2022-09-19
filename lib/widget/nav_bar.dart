@@ -40,7 +40,7 @@ class NavDrawer extends StatelessWidget {
                 endIndent: 30.0,
               ),
               _getListTile(
-                  context, Icons.shopping_bag, 'My Orders', '/order_page'),
+                  context, Icons.shopping_bag, 'Delivery List', '/order_page'),
               const Divider(
                 color: Colors.white,
                 indent: 10.0,
@@ -53,13 +53,6 @@ class NavDrawer extends StatelessWidget {
                 indent: 10.0,
                 endIndent: 30.0,
               ),
-              // _getListTile(
-              //     context, Icons.list_alt_rounded, 'Profile', '/profile_page'),
-              // const Divider(
-              //   color: Colors.white,
-              //   indent: 10.0,
-              //   endIndent: 30.0,
-              // ),
               ListTile(
                 leading: const Icon(
                   Icons.logout,
