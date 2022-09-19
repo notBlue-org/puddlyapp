@@ -61,8 +61,11 @@ class OrderPreviewPage extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            Verification(otpList, orderList)));
+                        builder: (context) => Verification(
+                            otpList,
+                            orderList,
+                            distributorMapItem[distributorID]["AmountDue"]
+                                .toString())));
               },
               style: ElevatedButton.styleFrom(backgroundColor: kButtonColor),
               child: const Text('Enter OTP')),

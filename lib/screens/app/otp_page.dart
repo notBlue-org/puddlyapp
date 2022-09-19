@@ -7,7 +7,8 @@ import 'dart:async';
 class Verification extends StatefulWidget {
   final List otplist;
   final List orderList;
-  const Verification(this.otplist, this.orderList, {Key? key})
+  final String amountDue;
+  const Verification(this.otplist, this.orderList, this.amountDue, {Key? key})
       : super(key: key);
 
   @override
@@ -69,6 +70,7 @@ class _VerificationState extends State<Verification> {
 
       List<dynamic> newList = widget.otplist;
       List orderList = widget.orderList;
+      String amountDue = widget.amountDue;
 
       _isLoading = true;
       bool found = newList.contains(_code);
@@ -76,7 +78,7 @@ class _VerificationState extends State<Verification> {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => Payment(orderList),
+              builder: (context) => Payment(orderList, amountDue),
             ));
       } else {
         showSnackBarAsBottomSheet(context, "Invalid OTP");

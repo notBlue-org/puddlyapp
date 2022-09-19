@@ -61,10 +61,10 @@ class HomePage extends StatelessWidget {
           ),
         ),
         // TODO: Get smaller bottom bar svg from anji
-        Expanded(
-            child: Stack(children: [
-          Positioned(bottom: -0.25 * height, left: -20, child: BottomWave())
-        ])),
+        // Expanded(
+        //     child: Stack(children: [
+        //   Positioned(bottom: -0.25 * height, left: -20, child: BottomWave())
+        // ])),
       ]),
     );
   }

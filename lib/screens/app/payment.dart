@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driversapp/constants/colors.dart';
 import 'package:driversapp/screens/app/store_page.dart';
@@ -12,7 +14,8 @@ import '../../widget/nav_bar.dart';
 
 class Payment extends StatefulWidget {
   final List orderList;
-  const Payment(this.orderList, {Key? key}) : super(key: key);
+  final String amountDue;
+  const Payment(this.orderList, this.amountDue, {Key? key}) : super(key: key);
 
   @override
   State<Payment> createState() => _PaymentState();
@@ -21,6 +24,7 @@ class Payment extends StatefulWidget {
 class _PaymentState extends State<Payment> {
   Widget build(BuildContext context) {
     List orderList = widget.orderList;
+    String amountDue = widget.amountDue;
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
@@ -31,7 +35,7 @@ class _PaymentState extends State<Payment> {
         SizedBox(
             height: 150,
             child: Stack(children: [Positioned(top: 0, child: WaveSvg())])),
-        PaymentBody(orderList),
+        PaymentBody(orderList, amountDue),
       ])),
     );
   }
@@ -39,7 +43,10 @@ class _PaymentState extends State<Payment> {
 
 class PaymentBody extends StatelessWidget {
   final List orderList;
-  const PaymentBody(this.orderList, {Key? key}) : super(key: key);
+  final String amountDue;
+
+  const PaymentBody(this.orderList, this.amountDue, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -75,8 +82,8 @@ class PaymentBody extends StatelessWidget {
               snapshot.connectionState == ConnectionState.done) {
             List<String> finalMap = snapshot.data.cast<String>();
             String imageUrl = finalMap[1];
-            print(orderList);
-
+            print(orderList[1]['DistributorID']);
+            var amountReceived;
             // String name = finalMap[0];
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -95,9 +102,34 @@ class PaymentBody extends StatelessWidget {
                   height: 25,
                   width: 25,
                 ),
+                Center(
+                  child: SizedBox(
+                    width: 250,
+                    child: TextFormField(
+                      onChanged: (value) {
+                        amountReceived = value;
+                        print(amountReceived);
+                      },
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Enter Amount ',
+                      ),
+                    ),
+                  ),
+                ),
                 ElevatedButton(
                   child: const Text("Confirm Order"),
-                  onPressed: () {
+                  onPressed: () async {
+                    double newAmountDue =
+                        double.parse(amountDue) - double.parse(amountReceived);
+                    FirebaseFirestore.instance
+                        .collection('Distributors')
+                        .doc(orderList[0]['DistributorID'])
+                        .update({'AmountDue': newAmountDue})
+                        .then((value) => print("Amount Updated"))
+                        .catchError((error) =>
+                            print("Failed to update amount: $error"));
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
