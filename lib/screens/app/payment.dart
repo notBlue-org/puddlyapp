@@ -1,14 +1,10 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driversapp/constants/colors.dart';
-import 'package:driversapp/screens/app/store_page.dart';
 import 'package:driversapp/screens/app/success_page.dart';
 import 'package:driversapp/static_assets/wave_svg.dart';
 import 'package:driversapp/widget/cust_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
 import '../../models/user_stored.dart';
 import '../../widget/nav_bar.dart';
 
@@ -121,8 +117,9 @@ class PaymentBody extends StatelessWidget {
                 ElevatedButton(
                   child: const Text("Confirm Order"),
                   onPressed: () async {
-                    double newAmountDue =
-                        double.parse(amountDue) - double.parse(amountReceived);
+                    String newAmountDue =
+                        (double.parse(amountDue) - double.parse(amountReceived))
+                            .toString();
                     FirebaseFirestore.instance
                         .collection('Distributors')
                         .doc(orderList[0]['DistributorID'])
