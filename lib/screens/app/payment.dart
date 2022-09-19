@@ -4,6 +4,7 @@ import 'package:driversapp/screens/app/success_page.dart';
 import 'package:driversapp/static_assets/wave_svg.dart';
 import 'package:driversapp/widget/cust_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../models/user_stored.dart';
 import '../../widget/nav_bar.dart';
@@ -117,6 +118,8 @@ class PaymentBody extends StatelessWidget {
                 ElevatedButton(
                   child: const Text("Confirm Order"),
                   onPressed: () async {
+                    FlutterRingtonePlayer.play(
+                        fromAsset: "assets/images/notif.wav");
                     String newAmountDue =
                         (double.parse(amountDue) - double.parse(amountReceived))
                             .toString();

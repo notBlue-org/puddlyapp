@@ -28,6 +28,7 @@ dependencies:
   hive_flutter: ^1.1.0
   dropdown_search: ^5.0.2
   dropdown_button2: ^1.8.1
+  flutter_ringtone_player: ^3.2.0
   
 dev_dependencies:
   flutter_test:
