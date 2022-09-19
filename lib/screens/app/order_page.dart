@@ -108,8 +108,7 @@ class OrderPageBody extends StatelessWidget {
             ),
           );
         }
-        // ignore: unnecessary_null_comparison
-        else if (snapshot.hasData == null) {
+        else if (snapshot.data == null) {
           const Text("All Orders Given");
         }
         return const CircularProgressIndicator();

@@ -16,9 +16,22 @@ class OrderPreviewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final otplist = <dynamic>[];
-    for (var otp in orderList) {
-      otplist.add(otp["OTP"]);
+    final otpList = <dynamic>[];
+    Map productMap = {};
+    for (var order in orderList) {
+      otpList.add(order["OTP"]);
+      for (var product in order["ProductList"]) {
+        if (productMap.containsKey(product["ProductID"])) {
+          productMap[product["ProductID"]]["Quantity"] += product["Quantity"];
+        } else {
+          Map tempProductMap = {};
+          tempProductMap["Description"] = product["Description"];
+          tempProductMap["Name"] = product["Name"];
+          tempProductMap["Quantity"] = product["Quantity"];
+          tempProductMap["ProductID"] = product["ProductID"];
+          productMap[product["ProductID"]] = tempProductMap;
+        }
+      }
     }
 
     return Scaffold(
@@ -34,7 +47,8 @@ class OrderPreviewPage extends StatelessWidget {
               child: Stack(children: [Positioned(top: 0, child: WaveSvg())])),
           ListView.builder(
             shrinkWrap: true,
-            itemBuilder: (ctx, i) => OrderPreviewItem(orderList[i]),
+            itemBuilder: (ctx, i) =>
+                OrderPreviewItem(productMap.keys.toList()[i], productMap),
             // padding: const EdgeInsets.all(10),
             itemCount: orderList.length,
             scrollDirection: Axis.vertical,
@@ -48,7 +62,7 @@ class OrderPreviewPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            Verification(otplist, orderList)));
+                            Verification(otpList, orderList)));
               },
               style: ElevatedButton.styleFrom(backgroundColor: kButtonColor),
               child: const Text('Enter OTP')),
@@ -58,40 +72,11 @@ class OrderPreviewPage extends StatelessWidget {
   }
 }
 
-// class OrderPreviewItem extends StatelessWidget {
-//   final String finalProductKey;
-//   final Map finalProductMap;
-//   const OrderPreviewItem(this.finalProductKey, this.finalProductMap, {Key? key})
-//       : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Card(
-//       child: ListTile(
-//         leading: CircleAvatar(
-//           backgroundColor: const Color(0xff764abc),
-//           child: Text(finalProductKey),
-//         ),
-//         title: Text(finalProductMap[finalProductKey]["Quantity"].toString()),
-//         subtitle: Text('Item description'),
-//         trailing: Icon(Icons.more_vert),
-//       ),
-//     );
-//   }
-// }
-
-// Normal Card
-// return Card(
-//   child: ListTile(
-//     title: Text(finalProductKey),
-//     subtitle: Text(finalProductMap[finalProductKey]["Quantity"].toString()),
-//   ),
-// );
-
 class OrderPreviewItem extends StatelessWidget {
-  // final String finalProductKey;
-  final Map orderListItem;
-  const OrderPreviewItem(this.orderListItem, {Key? key}) : super(key: key);
+  final String productMapKey;
+  final Map productMap;
+  const OrderPreviewItem(this.productMapKey, this.productMap, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -119,11 +104,11 @@ class OrderPreviewItem extends StatelessWidget {
                   children: [
                     SizedBox(
                       width: width * 0.2,
-                      child: Text(orderListItem["ProductList"]["Name"],
+                      child: Text(productMap[productMapKey]["Name"],
                           style: const TextStyle(fontWeight: FontWeight.bold)),
                     ),
                     Text(
-                      "(${orderListItem["ProductList"]["ProductID"]})",
+                      "(${productMap[productMapKey]["ProductID"]})",
                     ),
                     // SizedBox(width: 50),
                   ],
@@ -136,7 +121,7 @@ class OrderPreviewItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      orderListItem["ProductList"]["Quantity"].toString(),
+                      productMap[productMapKey]["Quantity"].toString(),
                       style: const TextStyle(color: Colors.black87),
                     ),
                   ],
@@ -149,7 +134,7 @@ class OrderPreviewItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      orderListItem["ProductList"]["Description"].toString(),
+                      productMap[productMapKey]["Description"].toString(),
                       style: const TextStyle(color: Colors.black87),
                     ),
                   ],
