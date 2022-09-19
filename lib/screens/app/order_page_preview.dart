@@ -50,7 +50,7 @@ class OrderPreviewPage extends StatelessWidget {
             itemBuilder: (ctx, i) =>
                 OrderPreviewItem(productMap.keys.toList()[i], productMap),
             // padding: const EdgeInsets.all(10),
-            itemCount: orderList.length,
+            itemCount: productMap.length,
             scrollDirection: Axis.vertical,
           ),
           const SizedBox(
