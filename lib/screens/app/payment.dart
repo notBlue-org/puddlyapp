@@ -82,7 +82,7 @@ class PaymentBody extends StatelessWidget {
               snapshot.connectionState == ConnectionState.done) {
             List<String> finalMap = snapshot.data.cast<String>();
             String imageUrl = finalMap[1];
-            print(orderList[1]['DistributorID']);
+            // print(orderList[0]['DistributorID']);
             var amountReceived;
             // String name = finalMap[0];
             return Column(
