@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:driversapp/constants/colors.dart';
 import 'package:driversapp/static_assets/wave_svg.dart';
 import 'package:driversapp/utils/misc.dart';
 import 'package:driversapp/widget/cust_appbar.dart';
@@ -162,11 +163,10 @@ class _CratePagebodyState extends State<CratePagebody> {
                     ),
                     const SizedBox(height: 20.0),
                     MaterialButton(
-                        color: Colors.lightBlueAccent,
+                        color: kButtonColor,
                         child: const Text(
                           'Submit',
-                          style:
-                              TextStyle(color: Color.fromARGB(255, 17, 12, 12)),
+                          style: TextStyle(color: kPrimaryColor),
                         ),
                         onPressed: () {
                           if (_value == "") {

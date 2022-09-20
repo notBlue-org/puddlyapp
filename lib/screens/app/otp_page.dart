@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:driversapp/constants/colors.dart';
 import 'package:driversapp/screens/app/payment.dart';
 import 'package:flutter_verification_code/flutter_verification_code.dart';
 import 'package:flutter/material.dart';
@@ -190,7 +191,7 @@ class _VerificationState extends State<Verification> {
                           : () {
                               verify();
                             },
-                      color: Colors.lightBlue.shade400,
+                      color: kButtonColor,
                       minWidth: MediaQuery.of(context).size.width * 0.8,
                       height: 50,
                       child: _isLoading
