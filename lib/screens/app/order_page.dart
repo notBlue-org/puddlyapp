@@ -93,6 +93,9 @@ class OrderPageBody extends StatelessWidget {
         }
         if (snapshot.hasData &&
             snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.data[0].length == 0) {
+            return const Text("All orders delivered");
+          }
           var distributorMap = snapshot.data[0];
           var distToOrderMap = snapshot.data[1];
           return Expanded(
@@ -107,9 +110,6 @@ class OrderPageBody extends StatelessWidget {
               ),
             ),
           );
-        }
-        else if (snapshot.data == null) {
-          const Text("All Orders Given");
         }
         return const CircularProgressIndicator();
       },

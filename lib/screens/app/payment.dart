@@ -118,8 +118,8 @@ class PaymentBody extends StatelessWidget {
                 ElevatedButton(
                   child: const Text("Confirm Order"),
                   onPressed: () async {
-                    FlutterRingtonePlayer.play(
-                        fromAsset: "assets/images/notif.wav");
+                    // FlutterRingtonePlayer.play(
+                    //     fromAsset: "assets/images/notif.wav");
                     String newAmountDue =
                         (double.parse(amountDue) - double.parse(amountReceived))
                             .toString();
