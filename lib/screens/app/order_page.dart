@@ -158,10 +158,17 @@ class _OrderItemState extends State<OrderItem> {
               children: [
                 Text(
                   widget.distributorMapItem[widget.distributorID]["Name"],
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Text(
-                    widget.distributorMapItem[widget.distributorID]["Address"]),
+                // Expanded(
+                //   child: Text(
+                //       widget.distributorMapItem[widget.distributorID]
+                //           ["Address"],
+                //       textAlign: TextAlign.start,
+                //       overflow: TextOverflow.clip,
+                //       maxLines: 20),
+                // ),
               ],
             ),
             Row(

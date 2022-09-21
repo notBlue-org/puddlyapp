@@ -8,6 +8,7 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../models/user_stored.dart';
 import '../../widget/nav_bar.dart';
+import 'package:intl/intl.dart';
 
 class Payment extends StatefulWidget {
   final List orderList;
@@ -52,6 +53,7 @@ class PaymentBody extends StatelessWidget {
       final driverRoute = userBox.getAt(0)?.route;
       final driverName = userBox.getAt(0)?.username;
       List<String> map = [];
+      print(orderList);
       await FirebaseFirestore.instance
           .collection("Drivers")
           .get()
@@ -115,39 +117,114 @@ class PaymentBody extends StatelessWidget {
                     ),
                   ),
                 ),
-                ElevatedButton(
-                  child: const Text("Confirm Order"),
-                  onPressed: () async {
-                    // FlutterRingtonePlayer.play(
-                    //     fromAsset: "assets/images/notif.wav");
-                    String newAmountDue =
-                        (double.parse(amountDue) - double.parse(amountReceived))
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      child: const Text("QR Payment"),
+                      onPressed: () async {
+                        // FlutterRingtonePlayer.play(
+                        //
+                        //     fromAsset: "assets/images/notif.wav");
+                        DateTime now = DateTime.now();
+                        final df = new DateFormat('dd-MM-yy,hh-mm-ss');
+                        // print(df.format(now));
+                        var reciept =
+                            FirebaseFirestore.instance.collection('Reciept');
+                        reciept.doc(orderList[0]['OrderID']).set({
+                          'Amount': amountReceived,
+                          'Date': df.format(now).toString(),
+                          'DistributorID': orderList[0]['DistributorID'],
+                          'Instrument Date': "",
+                          "Instrument No": "",
+                          'Narration': "",
+                          'OrderID': orderList[0]['OrderID'],
+                          'Payment Mode': "UPI",
+                        });
+                        String newAmountDue = (double.parse(amountDue) -
+                                double.parse(amountReceived))
                             .toString();
-                    FirebaseFirestore.instance
-                        .collection('Distributors')
-                        .doc(orderList[0]['DistributorID'])
-                        .update({'AmountDue': newAmountDue})
-                        .then((value) => print("Amount Updated"))
-                        .catchError((error) =>
-                            print("Failed to update amount: $error"));
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SuccessPage()),
-                    );
+                        FirebaseFirestore.instance
+                            .collection('Distributors')
+                            .doc(orderList[0]['DistributorID'])
+                            .update({'AmountDue': newAmountDue})
+                            .then((value) => print("Amount Updated"))
+                            .catchError((error) =>
+                                print("Failed to update amount: $error"));
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SuccessPage()),
+                        );
 
-                    for (var order in orderList) {
-                      final statusUpdateRef = FirebaseFirestore.instance
-                          .collection(order["CollectionName"])
-                          .doc(order["OrderID"]);
-                      statusUpdateRef.update({"Status": "Delivered"}).then(
-                          (value) =>
-                              print("DocumentSnapshot successfully updated!"),
-                          onError: (e) => print("Error updating document $e"));
-                    }
-                  },
-                  style:
-                      ElevatedButton.styleFrom(backgroundColor: kButtonColor),
+                        for (var order in orderList) {
+                          final statusUpdateRef = FirebaseFirestore.instance
+                              .collection(order["CollectionName"])
+                              .doc(order["OrderID"]);
+                          statusUpdateRef.update({"Status": "Delivered"}).then(
+                              (value) => print(
+                                  "DocumentSnapshot successfully updated!"),
+                              onError: (e) =>
+                                  print("Error updating document $e"));
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: kButtonColor),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(1.0),
+                      child: ElevatedButton(
+                        child: const Text("Cash Payment"),
+                        onPressed: () async {
+                          DateTime now = DateTime.now();
+                          final df = new DateFormat('dd-MM-yy,hh-mm-ss');
+                          // print(df.format(now));
+                          var reciept =
+                              FirebaseFirestore.instance.collection('Reciept');
+                          reciept.doc(orderList[0]['OrderID']).set({
+                            'Amout': amountDue,
+                            'Date': df.format(now).toString(),
+                            'DistributorID': orderList[0]['DistributorID'],
+                            'Instrument Date': "",
+                            "Instrument No": "",
+                            'Narration': "",
+                            'OrderID': orderList[0]['OrderID'],
+                            'Payment Mode': "Cash",
+                          });
+                          String newAmountDue = (double.parse(amountDue) -
+                                  double.parse(amountReceived))
+                              .toString();
+                          FirebaseFirestore.instance
+                              .collection('Distributors')
+                              .doc(orderList[0]['DistributorID'])
+                              .update({'AmountDue': amountReceived})
+                              .then((value) => print("Amount Updated"))
+                              .catchError((error) =>
+                                  print("Failed to update amount: $error"));
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SuccessPage()),
+                          );
+
+                          for (var order in orderList) {
+                            final statusUpdateRef = FirebaseFirestore.instance
+                                .collection(order["CollectionName"])
+                                .doc(order["OrderID"]);
+                            statusUpdateRef.update({
+                              "Status": "Delivered"
+                            }).then(
+                                (value) => print(
+                                    "DocumentSnapshot successfully updated!"),
+                                onError: (e) =>
+                                    print("Error updating document $e"));
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: kButtonColor),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             );
