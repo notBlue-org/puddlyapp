@@ -182,7 +182,7 @@ class PaymentBody extends StatelessWidget {
                           var reciept =
                               FirebaseFirestore.instance.collection('Reciept');
                           reciept.doc(orderList[0]['OrderID']).set({
-                            'Amout': amountDue,
+                            'Amount': amountDue,
                             'Date': df.format(now).toString(),
                             'DistributorID': orderList[0]['DistributorID'],
                             'Instrument Date': "",
@@ -197,7 +197,7 @@ class PaymentBody extends StatelessWidget {
                           FirebaseFirestore.instance
                               .collection('Distributors')
                               .doc(orderList[0]['DistributorID'])
-                              .update({'AmountDue': amountReceived})
+                              .update({'AmountDue': newAmountDue})
                               .then((value) => print("Amount Updated"))
                               .catchError((error) =>
                                   print("Failed to update amount: $error"));
