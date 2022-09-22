@@ -93,7 +93,6 @@ class Misc {
   static List getFiveDaysDate() {
     DateFormat formatter = DateFormat('dd-MM-yy');
     var fiveDaysDate = [];
-    print(DateTime.now());
     for (int i = 0; i < 5; i++) {
       DateTime nowFiveDaysAgo = DateTime.now().add(Duration(days: -i));
       String formatted = formatter.format(nowFiveDaysAgo);

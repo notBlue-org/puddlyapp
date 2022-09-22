@@ -1,3 +1,4 @@
+import 'package:driversapp/constants/colors.dart';
 import 'package:driversapp/screens/app/home_page.dart';
 import 'package:flutter/material.dart';
 
@@ -24,12 +25,13 @@ class _SuccessState extends State<SuccessPage> {
             subTitleText: 'Your have sucessfully delivered this order',
           ),
           ElevatedButton(
-            child: const Text('Go back Home'),
+            child: const Text('Go back home'),
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => const HomePage(),
               ),
             ),
+            style: ElevatedButton.styleFrom(backgroundColor: kButtonColor),
           ),
         ],
       ),

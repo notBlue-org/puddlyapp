@@ -1,22 +1,24 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:driversapp/constants/colors.dart';
-import 'package:driversapp/screens/app/payment.dart';
+import 'package:driversapp/screens/app/payment_page.dart';
+import 'package:driversapp/utils/misc.dart';
 import 'package:flutter_verification_code/flutter_verification_code.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-class Verification extends StatefulWidget {
+class VerificationPage extends StatefulWidget {
   final List otplist;
   final List orderList;
   final String amountDue;
-  const Verification(this.otplist, this.orderList, this.amountDue, {Key? key})
+  const VerificationPage(this.otplist, this.orderList, this.amountDue,
+      {Key? key})
       : super(key: key);
 
   @override
-  _VerificationState createState() => _VerificationState();
+  _VerificationPageState createState() => _VerificationPageState();
 }
 
-class _VerificationState extends State<Verification> {
+class _VerificationPageState extends State<VerificationPage> {
   bool _isResendAgain = false;
   final bool _isVerified = false;
   bool _isLoading = false;
@@ -54,7 +56,9 @@ class _VerificationState extends State<Verification> {
             Future.delayed(const Duration(seconds: 5), () {
               try {
                 Navigator.pop(context);
-              } on Exception {}
+              } on Exception catch (e) {
+                Misc.createSnackbar(context, e.toString());
+              }
             });
             return Container(
                 color: Colors.grey.shade800,
@@ -102,8 +106,7 @@ class _VerificationState extends State<Verification> {
                 children: [
                   const SizedBox(
                       height: 250,
-                      // ignore: unnecessary_const
-                      child: const Image(
+                      child: Image(
                         image: AssetImage('assets/images/email.png'),
                       )),
                   const SizedBox(

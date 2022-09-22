@@ -8,7 +8,6 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:driversapp/screens/app/home_page.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import '../../models/user_stored.dart';
 
 class Cratepage extends StatefulWidget {
@@ -130,9 +129,7 @@ class _CratePagebodyState extends State<CratePagebody> {
                       },
                       onChanged: (String? data) async {
                         {
-                          print(data);
                           crateRem = finalMap['$data'];
-                          print(crateRem);
                           _currDist = data!;
                         }
                       },
@@ -174,12 +171,9 @@ class _CratePagebodyState extends State<CratePagebody> {
                                 "Please enter the number of crates recieved");
                             return;
                           }
-                          print(crateRem);
-                          print(_value);
 
                           int finalCrate =
                               int.parse(crateRem) - int.parse(_value);
-                          print(finalCrate);
                           FirebaseFirestore.instance
                               .collection("Distributors")
                               .get()

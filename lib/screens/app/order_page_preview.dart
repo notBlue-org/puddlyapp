@@ -1,4 +1,4 @@
-import 'package:driversapp/screens/app/otp_page.dart';
+import 'package:driversapp/screens/app/verification_page.dart';
 import 'package:driversapp/static_assets/wave_svg.dart';
 import 'package:driversapp/widget/nav_bar.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +61,7 @@ class OrderPreviewPage extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => Verification(
+                        builder: (context) => VerificationPage(
                             otpList,
                             orderList,
                             distributorMapItem[distributorID]["AmountDue"]
