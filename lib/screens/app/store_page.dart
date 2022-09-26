@@ -5,6 +5,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driversapp/models/user_stored.dart';
 import 'package:driversapp/static_assets/wave_svg.dart';
+import 'package:driversapp/utils/misc.dart';
 import 'package:driversapp/widget/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -45,21 +46,29 @@ class StorePageBody extends StatelessWidget {
       final userBox = await Hive.openBox<UserStore>('user');
       final driverRoute = userBox.getAt(0)?.route;
       var distributorSet = <dynamic>[];
-      Map<String, dynamic> map = {};
+      Map<String, dynamic> storeMap = {};
       await FirebaseFirestore.instance
           .collection("Distributors")
           .where("Route", isEqualTo: driverRoute)
           .get()
           .then((QuerySnapshot querySnaphot) {
-        for (var doc in querySnaphot.docs) {
+        List storeData = querySnaphot.docs;
+        try {
+          storeData
+              .sort((a, b) => a["orderInRoute"].compareTo(b["orderInRoute"]));
+        } catch (e) {
+          Misc.createSnackbar(
+              context, "Order of the stores might not be accurate!");
+        }
+
+        for (var doc in storeData) {
           var name = doc["Name"];
           var mapEntry = doc["Map"];
           distributorSet.add(doc["Name"]);
-          map.addEntries([MapEntry(name, mapEntry)]);
+          storeMap.addEntries([MapEntry(name, mapEntry)]);
         }
       });
-
-      return map;
+      return storeMap;
     }
 
     return FutureBuilder<dynamic>(
@@ -84,7 +93,6 @@ class StorePageBody extends StatelessWidget {
                   itemCount: finalList.length,
                   itemBuilder: (context, int index) {
                     const SizedBox(height: 10.0);
-
                     return Card(
                         elevation: 6,
                         margin: const EdgeInsets.all(10),
