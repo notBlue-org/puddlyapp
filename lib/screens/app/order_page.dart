@@ -71,6 +71,7 @@ class OrderPageBody extends StatelessWidget {
       }
 
       var distributorMap = {};
+
       for (var distributor in distributorsOnRoute) {
         await FirebaseFirestore.instance
             .collection('Distributors')
@@ -82,7 +83,22 @@ class OrderPageBody extends StatelessWidget {
           }
         });
       }
-      return [distributorMap, distToOrderMap];
+      List distToOrderMapKeys = distToOrderMap.keys.toList();
+      List distInOrder = [];
+      try {
+        for (var distributor in distToOrderMapKeys) {
+          var tempList = [];
+          tempList
+              .add([distributor, distributorMap[distributor]["orderInRoute"]]);
+          distInOrder.add(tempList);
+        }
+
+        distInOrder.sort((a, b) => a[0][1].compareTo(b[0][1]));
+      } catch (e) {
+        distInOrder = distToOrderMap.keys.toList();
+      }
+
+      return [distributorMap, distToOrderMap, distInOrder];
     }
 
     return FutureBuilder<dynamic>(
@@ -96,8 +112,10 @@ class OrderPageBody extends StatelessWidget {
           if (snapshot.data[0].length == 0) {
             return const Text("All orders delivered");
           }
-          var distributorMap = snapshot.data[0];
-          var distToOrderMap = snapshot.data[1];
+          Map distributorMap = snapshot.data[0];
+          Map distToOrderMap = snapshot.data[1];
+          List distInOrder = snapshot.data[2];
+
           return Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(10),
@@ -105,8 +123,8 @@ class OrderPageBody extends StatelessWidget {
               itemCount: distToOrderMap.length,
               itemBuilder: (ctx, i) => OrderItem(
                 distributorMapItem: distributorMap,
-                orderList: distToOrderMap[distToOrderMap.keys.toList()[i]],
-                distributorID: distToOrderMap.keys.toList()[i],
+                orderList: distToOrderMap[distInOrder[i][0][0].toString()],
+                distributorID: distInOrder[i][0][0].toString(),
               ),
             ),
           );
