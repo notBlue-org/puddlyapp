@@ -46,8 +46,7 @@ class NavDrawer extends StatelessWidget {
                 indent: 10.0,
                 endIndent: 30.0,
               ),
-              _getListTile(context, Icons.next_week_sharp, 'Crate Management',
-                  '/crate_page'),
+
               const Divider(
                 color: Colors.white,
                 indent: 10.0,
