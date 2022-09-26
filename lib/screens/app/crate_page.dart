@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driversapp/constants/colors.dart';
+import 'package:driversapp/screens/app/payment_page.dart';
+import 'package:driversapp/screens/app/payment_qr.dart';
 import 'package:driversapp/static_assets/wave_svg.dart';
 import 'package:driversapp/utils/misc.dart';
 import 'package:driversapp/widget/cust_appbar.dart';
@@ -11,7 +13,9 @@ import 'package:driversapp/screens/app/home_page.dart';
 import '../../models/user_stored.dart';
 
 class Cratepage extends StatefulWidget {
-  const Cratepage({Key? key}) : super(key: key);
+  final List orderList;
+  final String amountDue;
+  const Cratepage(this.orderList, this.amountDue, {Key? key}) : super(key: key);
 
   @override
   State<Cratepage> createState() => _CratepageState();
@@ -20,6 +24,8 @@ class Cratepage extends StatefulWidget {
 class _CratepageState extends State<Cratepage> {
   @override
   Widget build(BuildContext context) {
+    List orderList = widget.orderList;
+    String amountDue = widget.amountDue;
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
@@ -30,14 +36,17 @@ class _CratepageState extends State<Cratepage> {
         SizedBox(
             height: 150,
             child: Stack(children: [Positioned(top: 0, child: WaveSvg())])),
-        const CratePagebody(),
+        CratePagebody(orderList, amountDue),
       ])),
     );
   }
 }
 
 class CratePagebody extends StatefulWidget {
-  const CratePagebody({Key? key}) : super(key: key);
+  final List orderList;
+  final String amountDue;
+  const CratePagebody(this.orderList, this.amountDue, {Key? key})
+      : super(key: key);
 
   @override
   State<CratePagebody> createState() => _CratePagebodyState();
@@ -57,10 +66,12 @@ class _CratePagebodyState extends State<CratePagebody> {
 
   @override
   Widget build(BuildContext context) {
+    List orderList = widget.orderList;
+    String amountDue = widget.amountDue;
+
     Future getCrate() async {
       final userBox = await Hive.openBox<UserStore>('user');
       final driverRoute = userBox.getAt(0)?.route;
-
       var distributorSet = <dynamic>[];
       Map<String, dynamic> map = {};
       await FirebaseFirestore.instance
@@ -162,7 +173,7 @@ class _CratePagebodyState extends State<CratePagebody> {
                     MaterialButton(
                         color: kButtonColor,
                         child: const Text(
-                          'Submit',
+                          'Pay QR',
                           style: TextStyle(color: kPrimaryColor),
                         ),
                         onPressed: () {
@@ -182,7 +193,37 @@ class _CratePagebodyState extends State<CratePagebody> {
                               if (doc["Name"] == _currDist) {
                                 doc.reference.update({'Crates': '$finalCrate'});
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => const HomePage()));
+                                    builder: (context) =>
+                                        PaymentQR(orderList, amountDue)));
+                              }
+                            }
+                          });
+                        }),
+                    MaterialButton(
+                        color: kButtonColor,
+                        child: const Text(
+                          'Pay Cash',
+                          style: TextStyle(color: kPrimaryColor),
+                        ),
+                        onPressed: () {
+                          if (_value == "") {
+                            Misc.createSnackbar(context,
+                                "Please enter the number of crates recieved");
+                            return;
+                          }
+
+                          int finalCrate =
+                              int.parse(crateRem) - int.parse(_value);
+                          FirebaseFirestore.instance
+                              .collection("Distributors")
+                              .get()
+                              .then((QuerySnapshot querySnapshot) {
+                            for (var doc in querySnapshot.docs) {
+                              if (doc["Name"] == _currDist) {
+                                doc.reference.update({'Crates': '$finalCrate'});
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        Payment(orderList, amountDue)));
                               }
                             }
                           });

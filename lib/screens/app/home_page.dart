@@ -29,8 +29,6 @@ class HomePage extends StatelessWidget {
                     "/store_page"),
                 _getButton(context, Icons.shopping_cart, "Delivery List",
                     "/order_page"),
-                _getButton(context, Icons.all_inbox_sharp, "Crate Management",
-                    "/crate_page"),
               ],
             ),
           ),

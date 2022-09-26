@@ -13,16 +13,16 @@ import '../../models/user_stored.dart';
 import '../../widget/nav_bar.dart';
 import 'package:intl/intl.dart';
 
-class Payment extends StatefulWidget {
+class PaymentQR extends StatefulWidget {
   final List orderList;
   final String amountDue;
-  const Payment(this.orderList, this.amountDue, {Key? key}) : super(key: key);
+  const PaymentQR(this.orderList, this.amountDue, {Key? key}) : super(key: key);
 
   @override
-  State<Payment> createState() => _PaymentState();
+  State<PaymentQR> createState() => _PaymentQRState();
 }
 
-class _PaymentState extends State<Payment> {
+class _PaymentQRState extends State<PaymentQR> {
   @override
   Widget build(BuildContext context) {
     List orderList = widget.orderList;
@@ -92,7 +92,12 @@ class PaymentBody extends StatelessWidget {
                   height: 50,
                   width: 50,
                 ),
-                Image.asset('assets/images/cod.jpg'),
+                Image.network(
+                  imageUrl,
+                  fit: BoxFit.fill,
+                  height: 250,
+                  width: 250,
+                ),
                 const SizedBox(
                   height: 25,
                   width: 25,
@@ -115,58 +120,57 @@ class PaymentBody extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(1.0),
-                      child: ElevatedButton(
-                        child: const Text("Cash Payment"),
-                        onPressed: () async {
-                          DateTime now = DateTime.now();
-                          final df = new DateFormat('dd-MM-yy,hh-mm-ss');
-                          var reciept =
-                              FirebaseFirestore.instance.collection('Reciept');
-                          reciept.doc(orderList[0]['OrderID']).set({
-                            'Amount': amountDue,
-                            'Date': df.format(now).toString(),
-                            'DistributorID': orderList[0]['DistributorID'],
-                            'Instrument Date': "",
-                            "Instrument No": "",
-                            'Narration': "",
-                            'OrderID': orderList[0]['OrderID'],
-                            'Payment Mode': "Cash",
-                          });
-                          String newAmountDue = (double.parse(amountDue) -
-                                  double.parse(amountReceived))
-                              .toString();
-                          FirebaseFirestore.instance
-                              .collection('Distributors')
-                              .doc(orderList[0]['DistributorID'])
-                              .update({'AmountDue': newAmountDue})
-                              .then((value) => Misc.createSnackbar(
-                                  context, "Amount Updated"))
-                              .catchError((error) => Misc.createSnackbar(
-                                  context, "Failed to update amount: $error"));
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SuccessPage()),
-                          );
+                    ElevatedButton(
+                      child: const Text("QR Payment"),
+                      onPressed: () async {
+                        // FlutterRingtonePlayer.play(
+                        //
+                        //     fromAsset: "assets/images/notif.wav");
+                        DateTime now = DateTime.now();
+                        final df = DateFormat('dd-MM-yy,hh-mm-ss');
+                        // print(df.format(now));
+                        var reciept =
+                            FirebaseFirestore.instance.collection('Reciept');
+                        reciept.doc(orderList[0]['OrderID']).set({
+                          'Amount': amountReceived,
+                          'Date': df.format(now).toString(),
+                          'DistributorID': orderList[0]['DistributorID'],
+                          'Instrument Date': "",
+                          "Instrument No": "",
+                          'Narration': "",
+                          'OrderID': orderList[0]['OrderID'],
+                          'Payment Mode': "UPI",
+                        });
+                        String newAmountDue = (double.parse(amountDue) -
+                                double.parse(amountReceived))
+                            .toString();
+                        FirebaseFirestore.instance
+                            .collection('Distributors')
+                            .doc(orderList[0]['DistributorID'])
+                            .update({'AmountDue': newAmountDue})
+                            .then((value) =>
+                                Misc.createSnackbar(context, "Amount updated"))
+                            .catchError((error) => Misc.createSnackbar(
+                                context, "Failed to update amount: $error"));
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SuccessPage()),
+                        );
 
-                          for (var order in orderList) {
-                            final statusUpdateRef = FirebaseFirestore.instance
-                                .collection(order["CollectionName"])
-                                .doc(order["OrderID"]);
-                            statusUpdateRef.update({
-                              "Status": "Delivered"
-                            }).then(
-                                (value) => Misc.createSnackbar(context,
-                                    "DocumentSnapshot successfully updated!"),
-                                onError: (e) => Misc.createSnackbar(
-                                    context, "Error updating document $e"));
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: kButtonColor),
-                      ),
+                        for (var order in orderList) {
+                          final statusUpdateRef = FirebaseFirestore.instance
+                              .collection(order["CollectionName"])
+                              .doc(order["OrderID"]);
+                          statusUpdateRef.update({"Status": "Delivered"}).then(
+                              (value) => Misc.createSnackbar(context,
+                                  "DocumentSnapshot successfully updated!"),
+                              onError: (e) => Misc.createSnackbar(
+                                  context, "Error updating document $e"));
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: kButtonColor),
                     ),
                   ],
                 ),

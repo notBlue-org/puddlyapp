@@ -15,8 +15,7 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const LoginPage());
       case '/home_page':
         return MaterialPageRoute(builder: (_) => const HomePage());
-      case '/crate_page':
-        return MaterialPageRoute(builder: (_) => const Cratepage());
+
       case '/order_page':
         return MaterialPageRoute(builder: (_) => const OrderPage());
       case '/store_page':
