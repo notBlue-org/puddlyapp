@@ -88,15 +88,7 @@ class PaymentBody extends StatelessWidget {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const SizedBox(
-                  height: 50,
-                  width: 50,
-                ),
                 Image.asset('assets/images/cod.jpg'),
-                const SizedBox(
-                  height: 25,
-                  width: 25,
-                ),
                 Center(
                   child: SizedBox(
                     width: 250,
