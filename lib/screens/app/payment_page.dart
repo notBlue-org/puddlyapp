@@ -123,11 +123,14 @@ class PaymentBody extends StatelessWidget {
                           DateTime now = DateTime.now();
                           final df = new DateFormat('dd-MM-yy,hh-mm-ss');
                           final dfCrate = new DateFormat('dd-MM-yy,hh:mm');
+                          var current = int.parse(finalMap[0]) +
+                              (int.parse(finalMap[2]) - int.parse(finalMap[3]));
                           var data = {
-                            "Current": finalMap[0],
+                            "Outstanding": finalMap[0],
                             "DistributorID": finalMap[1],
                             "Given": finalMap[2],
-                            "Recieved": finalMap[3]
+                            "Recieved": finalMap[3],
+                            "Current": current.toString()
                           };
                           FirebaseFirestore.instance
                               .collection("Crate_History")
@@ -146,7 +149,7 @@ class PaymentBody extends StatelessWidget {
                             'OrderID': orderList[0]['OrderID'],
                             'Payment Mode': "Cash",
                           });
-                          String finalCrate_ = '$finalCrate';
+
                           String newAmountDue = (double.parse(amountDue) -
                                   double.parse(amountReceived))
                               .toString();
@@ -155,7 +158,7 @@ class PaymentBody extends StatelessWidget {
                               .doc(orderList[0]['DistributorID'])
                               .update({
                                 'AmountDue': newAmountDue,
-                                'Crates': finalCrate_
+                                'Crates': current.toString()
                               })
                               .then((value) => Misc.createSnackbar(
                                   context, "Amount Updated"))
