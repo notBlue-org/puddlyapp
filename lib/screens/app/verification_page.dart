@@ -1,7 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:driversapp/constants/colors.dart';
 import 'package:driversapp/screens/app/crate_page.dart';
-import 'package:driversapp/screens/app/payment_page.dart';
 import 'package:driversapp/utils/misc.dart';
 import 'package:flutter_verification_code/flutter_verification_code.dart';
 import 'package:flutter/material.dart';

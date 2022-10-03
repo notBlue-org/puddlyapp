@@ -1,7 +1,5 @@
-import 'package:driversapp/screens/app/crate_page.dart';
 import 'package:driversapp/screens/app/home_page.dart';
 import 'package:driversapp/screens/app/order_page.dart';
-// import 'package:driversapp/screens/app/order_page_preview.dart';
 import 'package:driversapp/screens/app/store_page.dart';
 import 'package:driversapp/screens/login_page.dart';
 

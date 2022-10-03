@@ -16,7 +16,11 @@ import 'package:intl/intl.dart';
 class Payment extends StatefulWidget {
   final List orderList;
   final String amountDue;
-  const Payment(this.orderList, this.amountDue, {Key? key}) : super(key: key);
+  final int finalCrate;
+  final List map;
+  const Payment(this.orderList, this.amountDue, this.finalCrate, this.map,
+      {Key? key})
+      : super(key: key);
 
   @override
   State<Payment> createState() => _PaymentState();
@@ -27,6 +31,8 @@ class _PaymentState extends State<Payment> {
   Widget build(BuildContext context) {
     List orderList = widget.orderList;
     String amountDue = widget.amountDue;
+    int finalCrate = widget.finalCrate;
+    List finalMap = widget.map;
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
@@ -37,7 +43,7 @@ class _PaymentState extends State<Payment> {
         SizedBox(
             height: 150,
             child: Stack(children: [Positioned(top: 0, child: WaveSvg())])),
-        PaymentBody(orderList, amountDue),
+        PaymentBody(orderList, amountDue, finalCrate, finalMap),
       ])),
     );
   }
@@ -46,8 +52,12 @@ class _PaymentState extends State<Payment> {
 class PaymentBody extends StatelessWidget {
   final List orderList;
   final String amountDue;
+  final int finalCrate;
+  final List finalMap;
 
-  const PaymentBody(this.orderList, this.amountDue, {Key? key})
+  const PaymentBody(
+      this.orderList, this.amountDue, this.finalCrate, this.finalMap,
+      {Key? key})
       : super(key: key);
 
   @override
@@ -82,8 +92,6 @@ class PaymentBody extends StatelessWidget {
           }
           if (snapshot.hasData &&
               snapshot.connectionState == ConnectionState.done) {
-            List<String> finalMap = snapshot.data.cast<String>();
-            String imageUrl = finalMap[1];
             String amountReceived = "";
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -114,10 +122,22 @@ class PaymentBody extends StatelessWidget {
                         onPressed: () async {
                           DateTime now = DateTime.now();
                           final df = new DateFormat('dd-MM-yy,hh-mm-ss');
+                          final dfCrate = new DateFormat('dd-MM-yy,hh:mm');
+                          var data = {
+                            "Current": finalMap[0],
+                            "DistributorID": finalMap[1],
+                            "Given": finalMap[2],
+                            "Recieved": finalMap[3]
+                          };
+                          FirebaseFirestore.instance
+                              .collection("Crate_History")
+                              .doc(dfCrate.format(now).toString())
+                              .set(data);
+
                           var reciept =
                               FirebaseFirestore.instance.collection('Reciept');
                           reciept.doc(orderList[0]['OrderID']).set({
-                            'Amount': amountDue,
+                            'Amount': amountReceived,
                             'Date': df.format(now).toString(),
                             'DistributorID': orderList[0]['DistributorID'],
                             'Instrument Date': "",
@@ -126,13 +146,17 @@ class PaymentBody extends StatelessWidget {
                             'OrderID': orderList[0]['OrderID'],
                             'Payment Mode': "Cash",
                           });
+                          String finalCrate_ = '$finalCrate';
                           String newAmountDue = (double.parse(amountDue) -
                                   double.parse(amountReceived))
                               .toString();
                           FirebaseFirestore.instance
                               .collection('Distributors')
                               .doc(orderList[0]['DistributorID'])
-                              .update({'AmountDue': newAmountDue})
+                              .update({
+                                'AmountDue': newAmountDue,
+                                'Crates': finalCrate_
+                              })
                               .then((value) => Misc.createSnackbar(
                                   context, "Amount Updated"))
                               .catchError((error) => Misc.createSnackbar(

@@ -16,7 +16,12 @@ import 'package:intl/intl.dart';
 class PaymentQR extends StatefulWidget {
   final List orderList;
   final String amountDue;
-  const PaymentQR(this.orderList, this.amountDue, {Key? key}) : super(key: key);
+  final List map;
+  final int finalCrate;
+
+  const PaymentQR(this.orderList, this.amountDue, this.finalCrate, this.map,
+      {Key? key})
+      : super(key: key);
 
   @override
   State<PaymentQR> createState() => _PaymentQRState();
@@ -27,6 +32,8 @@ class _PaymentQRState extends State<PaymentQR> {
   Widget build(BuildContext context) {
     List orderList = widget.orderList;
     String amountDue = widget.amountDue;
+    final List finalmap = widget.map;
+    int finalCrate = widget.finalCrate;
     return Scaffold(
       extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
@@ -37,7 +44,7 @@ class _PaymentQRState extends State<PaymentQR> {
         SizedBox(
             height: 150,
             child: Stack(children: [Positioned(top: 0, child: WaveSvg())])),
-        PaymentBody(orderList, amountDue),
+        PaymentBody(orderList, amountDue, finalCrate, finalmap),
       ])),
     );
   }
@@ -46,8 +53,12 @@ class _PaymentQRState extends State<PaymentQR> {
 class PaymentBody extends StatelessWidget {
   final List orderList;
   final String amountDue;
+  final int finalCrate;
+  final List finalmap;
 
-  const PaymentBody(this.orderList, this.amountDue, {Key? key})
+  const PaymentBody(
+      this.orderList, this.amountDue, this.finalCrate, this.finalmap,
+      {Key? key})
       : super(key: key);
 
   @override
@@ -56,6 +67,7 @@ class PaymentBody extends StatelessWidget {
       final userBox = await Hive.openBox<UserStore>('user');
       final driverRoute = userBox.getAt(0)?.route;
       final driverName = userBox.getAt(0)?.username;
+
       List<String> map = [];
       await FirebaseFirestore.instance
           .collection("Drivers")
@@ -128,7 +140,17 @@ class PaymentBody extends StatelessWidget {
                         //     fromAsset: "assets/images/notif.wav");
                         DateTime now = DateTime.now();
                         final df = DateFormat('dd-MM-yy,hh-mm-ss');
-                        // print(df.format(now));
+                        final dfCrate = new DateFormat('dd-MM-yy,hh:mm');
+                        var data = {
+                          "Current": finalMap[0],
+                          "DistributorID": finalMap[1],
+                          "Given": finalMap[2],
+                          "Recieved": finalMap[3]
+                        };
+                        FirebaseFirestore.instance
+                            .collection("Crate_History")
+                            .doc(dfCrate.format(now).toString())
+                            .set(data);
                         var reciept =
                             FirebaseFirestore.instance.collection('Reciept');
                         reciept.doc(orderList[0]['OrderID']).set({
@@ -141,13 +163,17 @@ class PaymentBody extends StatelessWidget {
                           'OrderID': orderList[0]['OrderID'],
                           'Payment Mode': "UPI",
                         });
+                        String finalCrate_ = '$finalCrate';
                         String newAmountDue = (double.parse(amountDue) -
                                 double.parse(amountReceived))
                             .toString();
                         FirebaseFirestore.instance
                             .collection('Distributors')
                             .doc(orderList[0]['DistributorID'])
-                            .update({'AmountDue': newAmountDue})
+                            .update({
+                              'AmountDue': newAmountDue,
+                              'Crates': finalCrate_
+                            })
                             .then((value) =>
                                 Misc.createSnackbar(context, "Amount updated"))
                             .catchError((error) => Misc.createSnackbar(

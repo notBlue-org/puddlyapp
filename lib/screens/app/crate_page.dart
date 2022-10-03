@@ -6,11 +6,7 @@ import 'package:driversapp/static_assets/wave_svg.dart';
 import 'package:driversapp/utils/misc.dart';
 import 'package:driversapp/widget/cust_appbar.dart';
 import 'package:driversapp/widget/nav_bar.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:driversapp/screens/app/home_page.dart';
-import '../../models/user_stored.dart';
 
 class Cratepage extends StatefulWidget {
   final List orderList;
@@ -54,14 +50,15 @@ class CratePagebody extends StatefulWidget {
 
 class _CratePagebodyState extends State<CratePagebody> {
   late String crateRem;
-  late String _currDist;
-  late String _value = "";
+
+  late String _valuegiven = "";
+  late String _valuereturned = "";
   @override
   void initState() {
     super.initState();
     crateRem = "";
-    _currDist = "";
-    _value = "";
+    _valuegiven = "";
+    _valuereturned = "";
   }
 
   @override
@@ -70,20 +67,16 @@ class _CratePagebodyState extends State<CratePagebody> {
     String amountDue = widget.amountDue;
 
     Future getCrate() async {
-      final userBox = await Hive.openBox<UserStore>('user');
-      final driverRoute = userBox.getAt(0)?.route;
-      var distributorSet = <dynamic>[];
       Map<String, dynamic> map = {};
       await FirebaseFirestore.instance
           .collection("Distributors")
           .get()
           .then((QuerySnapshot querySnaphot) {
         for (var doc in querySnaphot.docs) {
-          if (doc["Route"] == driverRoute) {
-            var name = doc["Name"];
-            var crates = doc["Crates"];
-            distributorSet.add(doc["Name"]);
-            map.addEntries([MapEntry(name, crates)]);
+          if (doc["DistributorID"] == orderList[0]["DistributorID"]) {
+            var intialCrates = doc["Crates"];
+            map.addEntries(
+                [MapEntry(orderList[0]["DistributorID"], intialCrates)]);
           }
         }
       });
@@ -99,16 +92,13 @@ class _CratePagebodyState extends State<CratePagebody> {
         }
         if (snapshot.hasData &&
             snapshot.connectionState == ConnectionState.done) {
-          List<String> finalList = [];
           Map<String, dynamic> finalMap = snapshot.data.cast<String, dynamic>();
           List<String> crates = [];
 
           finalMap.forEach((key, value) {
-            finalList.add(key);
-          });
-          finalMap.forEach((key, value) {
             crates.add(value);
           });
+          var fincrates = crates[0];
 
           return Container(
               padding: const EdgeInsets.all(10.0),
@@ -121,41 +111,27 @@ class _CratePagebodyState extends State<CratePagebody> {
                     const SizedBox(
                       height: 50,
                     ),
+                    Text(
+                      'Number of Crates to be Returned $fincrates  ',
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 25),
+                    ),
+                    const SizedBox(height: 50.0),
                     const Text(
-                      "Distributors Name",
+                      "Crates Given",
                       style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                    DropdownSearch<String>(
-                      items: finalList,
-                      validator: (String? item) {
-                        if (item == null) {
-                          return "Required field";
-                        } else {
-                          return null;
-                        }
-                      },
-                      onChanged: (String? data) async {
-                        {
-                          crateRem = finalMap['$data'];
-                          _currDist = data!;
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 20.0),
-                    const Text(
-                      "Crates Value",
-                      style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
                     ),
                     const SizedBox(height: 25.0),
                     TextFormField(
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                          hintText: 'Returned Number of Crates are $crateRem',
+                          hintText:
+                              'Number of Crates Given to the distributor by driver',
                           border: OutlineInputBorder(
                               borderSide: const BorderSide(
                                   color: Colors.grey, width: 32.0),
@@ -166,68 +142,94 @@ class _CratePagebodyState extends State<CratePagebody> {
                                   width: 1.0),
                               borderRadius: BorderRadius.circular(5.0))),
                       onChanged: (value) {
-                        _value = value;
+                        _valuegiven = value;
                       },
                     ),
                     const SizedBox(height: 20.0),
-                    MaterialButton(
-                        color: kButtonColor,
-                        child: const Text(
-                          'Pay QR',
-                          style: TextStyle(color: kPrimaryColor),
-                        ),
-                        onPressed: () {
-                          if (_value == "") {
-                            Misc.createSnackbar(context,
-                                "Please enter the number of crates recieved");
-                            return;
-                          }
+                    const Text(
+                      "Crates Returned",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
+                    ),
+                    const SizedBox(height: 20.0),
+                    TextFormField(
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                          hintText:
+                              'Number of Crates Given back to  Driver by  Distributor',
+                          border: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Colors.grey, width: 32.0),
+                              borderRadius: BorderRadius.circular(5.0)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Color.fromARGB(255, 192, 103, 103),
+                                  width: 1.0),
+                              borderRadius: BorderRadius.circular(5.0))),
+                      onChanged: (value) {
+                        _valuereturned = value;
+                      },
+                    ),
+                    const SizedBox(height: 30.0),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          MaterialButton(
+                              color: kButtonColor,
+                              child: const Text(
+                                'Pay QR',
+                                style: TextStyle(color: kPrimaryColor),
+                              ),
+                              onPressed: () {
+                                if (_valuereturned == "") {
+                                  Misc.createSnackbar(context,
+                                      "Please enter the number of crates recieved");
+                                  return;
+                                }
 
-                          int finalCrate =
-                              int.parse(crateRem) - int.parse(_value);
-                          FirebaseFirestore.instance
-                              .collection("Distributors")
-                              .get()
-                              .then((QuerySnapshot querySnapshot) {
-                            for (var doc in querySnapshot.docs) {
-                              if (doc["Name"] == _currDist) {
-                                doc.reference.update({'Crates': '$finalCrate'});
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        PaymentQR(orderList, amountDue)));
-                              }
-                            }
-                          });
-                        }),
-                    MaterialButton(
-                        color: kButtonColor,
-                        child: const Text(
-                          'Pay Cash',
-                          style: TextStyle(color: kPrimaryColor),
-                        ),
-                        onPressed: () {
-                          if (_value == "") {
-                            Misc.createSnackbar(context,
-                                "Please enter the number of crates recieved");
-                            return;
-                          }
+                                int finalCrate = int.parse(_valuegiven) -
+                                    int.parse(_valuereturned);
+                                List finalmap = [
+                                  fincrates,
+                                  orderList[0]["DistributorID"],
+                                  _valuegiven,
+                                  _valuereturned
+                                ];
 
-                          int finalCrate =
-                              int.parse(crateRem) - int.parse(_value);
-                          FirebaseFirestore.instance
-                              .collection("Distributors")
-                              .get()
-                              .then((QuerySnapshot querySnapshot) {
-                            for (var doc in querySnapshot.docs) {
-                              if (doc["Name"] == _currDist) {
-                                doc.reference.update({'Crates': '$finalCrate'});
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        Payment(orderList, amountDue)));
-                              }
-                            }
-                          });
-                        })
+                                    builder: (context) => PaymentQR(orderList,
+                                        amountDue, finalCrate, finalmap)));
+                              }),
+                          MaterialButton(
+                              color: kButtonColor,
+                              child: const Text(
+                                'Pay Cash',
+                                style: TextStyle(color: kPrimaryColor),
+                              ),
+                              onPressed: () {
+                                List finalmap = [
+                                  fincrates,
+                                  orderList[0]["DistributorID"],
+                                  _valuegiven,
+                                  _valuereturned
+                                ];
+
+                                if (_valuereturned == "") {
+                                  Misc.createSnackbar(context,
+                                      "Please enter the number of crates recieved");
+                                  return;
+                                }
+
+                                int finalCrate = int.parse(_valuegiven) -
+                                    int.parse(_valuereturned);
+
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => Payment(orderList,
+                                        amountDue, finalCrate, finalmap)));
+                              })
+                        ])
                   ]));
         }
         return const CircularProgressIndicator();
