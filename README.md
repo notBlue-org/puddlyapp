@@ -1,4 +1,4 @@
-# Puddly App - Time Series Analysis Companion
+# Puddly App - Order Management App for businesses
 
 ## Table of Contents
 - [Introduction](#introduction)
